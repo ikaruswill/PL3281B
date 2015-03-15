@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="PL3281B">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>PL3281B</title>
+    <script src="angular.js"></script>
+    <script src="PL3281B.js"></script>
+    <script src="form.ctrl.js"></script>
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body>
+
+<div class="jumbotron">
+    <h2>PL3281B Psychology Experiment</h2>
+    <h4>Investigating Irrelevant Speech Effect: Changing State Hypothesis on Item-Context Tasks</h4>
+    <p></p>
+    <h5>Please enter your session number</h5>
+    <form class="form-inline" ng-controller="FormController as formCon" ng-submit="formCon.parseSessionNo()">
+    <div class="form-group">
+        <input type="text" class="form-control" ng-model="formCon.sessionNo" placeholder="Your session number">
+    </div>
+    <button class="btn btn-default">Submit</button>
+        {{formCon.newSession}}
+    </form>
+
+</div>
+</body>
+</html>
