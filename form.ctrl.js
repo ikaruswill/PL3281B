@@ -13,7 +13,5 @@ angular.module('PL3281B').controller('FormController', ['$window', 'PL3281BServi
             vm.testType = 'order';
             vm.PL3281BService.testType = 'order';
         }
-
-        $window.location.href='PL3281B/instructions.html';
     }
 }]);
