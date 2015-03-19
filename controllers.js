@@ -22,25 +22,28 @@ function routeConfig($routeProvider) {
 
 mod.config(routeConfig);
 
-mod.controller('sessionFormController', ['psychService', function(psychService){
+mod.controller('sessionFormController', ['psychService', '$location', function(psychService, $location){
         var vm = this;
         var svc = psychService;
+        vm.sessionNoInput = '';
         svc.sessionNo = '';
         svc.testType = '';
 
-        var testType1 = '';
+        vm.testType1 = '';
 
         vm.parseSessionNoInput = function() {
             if(svc.sessionNo % 2 == 0) {
                 svc.testType = 'colour';
+                vm.testType1 = svc.testType;
             } else {
                 svc.testType = 'order';
             }
+            $location.path('/ins-1');
         }
 
     }]
 );
 
-mod.controller('pageController', function() {
+mod.controller('pageController', ['psychService', '$location', function(psychService, $location) {
 
-});
+}]);
