@@ -3,11 +3,12 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>PL3281B</title>
-    <script src="angular.js"></script>
+    <script src="resources/angular.js"></script>
     <script src="PL3281B.js"></script>
     <script src="form.ctrl.js"></script>
 
-    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="resources/bootstrap.min.css">
+    <base href="/">
 </head>
 <body>
 
@@ -21,7 +22,7 @@
         <input type="text" class="form-control" ng-model="formCon.sessionNo" placeholder="Your session number">
     </div>
     <button class="btn btn-default">Submit</button>
-        {{formCon.newSession}}
+        {{PL3281BService.testType}}
     </form>
 
 </div>
