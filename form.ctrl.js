@@ -1,4 +1,4 @@
-angular.module('PL3281B').controller('FormController', ['$window', 'PL3281BService',
+angular.module('PL3281B').controller('FormController', ['PL3281BService',
 
     function($window, PL3281BService) {
     var vm = this;
