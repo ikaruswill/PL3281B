@@ -24,20 +24,16 @@ function routeConfig($routeProvider) {
         controllerAs: 'initCon',
         templateUrl: 'ins-common.html'
     }).when('/ins-order', {
-        controller: 'orderController',
+        controller: 'divergedInstController',
         controllerAs: 'oCon',
         templateUrl: 'ins-order.html'
     }).when('/ins-colour', {
-        controller: 'colourController',
+        controller: 'divergedInstController',
         controllerAs: 'cCon',
         templateUrl: 'ins-colour.html'
-    }).when('/order/practice/start', {
+    }).when('/practice/start', {
         controller: 'startController',
         controllerAs: 'oCon',
-        templateUrl: 'start.html'
-    }).when('/colour/practice/start', {
-        controller: 'startController',
-        controllerAs: 'cCon',
         templateUrl: 'start.html'
     })
 }
@@ -69,16 +65,12 @@ mod.controller('sessionInitController', ['psychService', '$location', function(p
     }]
 );
 
-mod.controller('startController', ['psychService','$location', '$timeout', '$scope', function(psychService, $location, $timeout, $scope) {
-    var testType = psychService.sessionParams.testType;
-    var redirect = function() {
-        if(testType == 'colour') {
-            $location.path('/colour/practice/1');
-        } else if(testType == 'order') {
-            $location.path('/order/practice/1');
-        }
+mod.controller('startController', ['$location', '$timeout', '$scope', function($location, $timeout, $scope) {
+    var startRedirect = function() {
+        $location.path('/1');
     };
-    var timer = $timeout(redirect, 1000);
+
+    var timer = $timeout(startRedirect, 1000);
 
     $scope.$on('$destroy', function() {
         $timeout.cancel(timer);
@@ -94,10 +86,10 @@ mod.controller('orderController', ['psychService', '$location', function(psychSe
 
 }]);
 
-mod.controller('colourController', ['psychService', '$location', function(psychService, $location) {
+mod.controller('divergedInstController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
 
     vm.beginPractice = function() {
-        $location.path('/colour/practice/start');
+        $location.path('/practice/start');
     }
 }]);
