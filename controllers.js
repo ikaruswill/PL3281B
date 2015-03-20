@@ -3,12 +3,80 @@ var mod = angular.module('psych', ['ngRoute']);
 
 mod.service('psychService', function() {
 
+    this.testConstants = {
+        colourMap: {
+            0: '#ffff00', // Yellow
+            1: '#bfbfbf', // Brown
+            2: '#ff0000', // Red
+            3: '#604a7b', // Purple
+            4: '#558ed5', // Blue
+            5: '#00b050', // Green
+            6: '#bfbfbf' // Grey
+        },
+
+        letterMap: {
+            0: 'B',
+            1: 'H',
+            2: 'J',
+            3: 'Q',
+            4: 'V',
+            5: 'X',
+            6: 'Z'
+        }
+    };
+
+    this.testState = {
+        tested: false,
+        iterationCount: 0,
+
+        colourPool: {
+            0: false,
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false
+        },
+
+        letterPool: {
+            0: false,
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false
+        }
+    };
+
+    // User data begins here
+
     this.sessionParams = {
         sessionNo: 'NIL',
         testType: 'NIL'
     };
 
+    this.practiceData = {
+        trialCount: 0,
+        displayCount: 0,
+        colour: [],
+        colourUser: [],
+        letter: [],
+        letterUser: []
+    };
 
+    this.test1Data = {
+
+    };
+
+    this.test2Data = {
+
+    };
+
+    this.test3Data = {
+
+    };
 
 });
 
@@ -24,17 +92,21 @@ function routeConfig($routeProvider) {
         controllerAs: 'initCon',
         templateUrl: 'ins-common.html'
     }).when('/ins-order', {
-        controller: 'divergedInstController',
-        controllerAs: 'oCon',
+        controller: 'prePracticeController',
+        controllerAs: 'prePracCon',
         templateUrl: 'ins-order.html'
     }).when('/ins-colour', {
-        controller: 'divergedInstController',
-        controllerAs: 'cCon',
+        controller: 'prePracticeController',
+        controllerAs: 'prePracCon',
         templateUrl: 'ins-colour.html'
     }).when('/practice/start', {
         controller: 'startController',
         controllerAs: 'oCon',
         templateUrl: 'start.html'
+    }).when('/1', {
+        controller: 'testController,',
+        controllerAs: 'tCon',
+        templateUrl: ''
     })
 }
 
@@ -65,31 +137,35 @@ mod.controller('sessionInitController', ['psychService', '$location', function(p
     }]
 );
 
-mod.controller('startController', ['$location', '$timeout', '$scope', function($location, $timeout, $scope) {
-    var startRedirect = function() {
-        $location.path('/1');
-    };
-
-    var timer = $timeout(startRedirect, 1000);
-
-    $scope.$on('$destroy', function() {
-        $timeout.cancel(timer);
-    })
-}]);
-
-mod.controller('orderController', ['psychService', '$location', function(psychService, $location) {
-    var vm = this;
-
-    vm.beginPractice = function() {
-        $location.path('/order/practice/start');
-    }
-
-}]);
-
-mod.controller('divergedInstController', ['psychService', '$location', function(psychService, $location) {
+mod.controller('prePracticeController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
 
     vm.beginPractice = function() {
         $location.path('/practice/start');
     }
 }]);
+
+mod.controller('timerController', ['psychService', '$location', '$timeout', '$scope', function(psychService, $location, $timeout, $scope) {
+    var testRedirect = function() {
+        psychService.tested = true;
+        var random = Math.floor(Math.random() * 7);
+        $location.path('/' + random);
+    };
+
+    var betweenRedirect = function() {
+        psychService.tested = false;
+        $location.path('/btw');
+    }
+
+    if(!psychService.tested) {
+        var timer = $timeout(testRedirect, 1000);
+    } else {
+        var timer = $timeout(betweenRedirect, 500);
+    }
+
+
+    $scope.$on('$destroy', function() {
+        $timeout.cancel(timer);
+    })
+}]);
+
