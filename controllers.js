@@ -1,9 +1,17 @@
 // Create module for the experiment
 var mod = angular.module('psych', ['ngRoute']);
 
-mod.service('psychService', function() {
-    this.sessionNo = '';
-    this.testType = '';
+mod.factory('psychService', function() {
+    var sessionParams = {
+        sessionNo: '0',
+        testType: 'NULL'
+    }
+
+    return {
+        getSessionParams: function() {
+            return sessionParams;
+        }
+    }
 });
 
 
@@ -11,10 +19,16 @@ mod.service('psychService', function() {
 function routeConfig($routeProvider) {
     $routeProvider.when('/', {
         controller: 'sessionFormController',
+        controllerAs: 'formCon',
         templateUrl: 'session-request.html'
-    }).when('/ins-1', {
-        controller: 'pageController',
+    }).when('/ins-common', {
+        controller: 'sessionFormController',
+        controllerAs: 'formCon',
         templateUrl: 'ins-common.html'
+    }).when('/ins-colour', {
+        templateUrl: 'ins-colour.html'
+    }).when('/ins-order', {
+        templateUrl: 'ins-order.html'
     })
 }
 
@@ -22,27 +36,30 @@ mod.config(routeConfig);
 
 mod.controller('sessionFormController', ['psychService', '$location', function(psychService, $location){
         var vm = this;
-        var svc = psychService;
+        var sessionParams = psychService.getSessionParams();
         vm.sessionNoInput = '';
-        svc.sessionNo = '';
-        svc.testType = '';
-
-        vm.testType1 = '';
 
         vm.parseSessionNoInput = function() {
             if(vm.sessionNoInput % 2 == 0) {
-                svc.testType = 'colour';
-                vm.testType1 = svc.testType;
-            } else {
-                svc.testType = 'order';
-                vm.testType1 = svc.testType;
+                sessionParams.testType = 'colour';
+            } else if(vm.sessionNoInput % 2 != 0){
+                sessionParams.testType = 'order';
             }
-            $location.path('/ins-1');
-        }
+            sessionParams.sessionNo = vm.sessionNoInput;
+            $location.path('/ins-common');
+        };
 
+        vm.divergeInsRedirect = function() {
+            if(sessionParams.testType == 'colour') {
+                $location.path('/ins-colour');
+            } else if(sessionParams.testType == 'order'){
+                $location.path('/ins-order');
+            }
+        }
     }]
 );
 
-mod.controller('pageController', ['psychService', '$location', function(psychService, $location) {
+mod.controller('commonDivergeController', ['psychService', '$location', function(psychService, $location) {
+    var vm = this;
 
 }]);
