@@ -2,13 +2,9 @@
 <h4>Investigating Irrelevant Speech Effect: Changing State Hypothesis on Item-Context Tasks</h4>
 <p></p>
 <h5>Please enter your session number</h5>
-<form class="form-inline" ng-submit="formCon.parseSessionNoInput()">
+<form class="form-inline" ng-submit="initCon.parseSessionNoInput()">
     <div class="form-group">
-        <input type="text" class="form-control" ng-model="formCon.sessionNoInput" placeholder="Your session number" required>
+        <input type="text" class="form-control" ng-model="initCon.sessionNoInput" placeholder="Your session number" required>
     </div>
     <button class="btn btn-default">Submit</button>
-    Type1: {{formCon.testType1}}
-    Type: {{formCon.service1.testType}}
-    Number: {{formCon.service1.sessionNo}}
-    Number Input: {{formCon.sessionNoInput}}
 </form>
