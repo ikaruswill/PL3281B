@@ -1,11 +1,9 @@
 // Create module for the experiment
 var mod = angular.module('psych', ['ngRoute']);
 
-mod.factory('psychService', function() {
-    var sessionNo = '';
-    var testType = '';
-
-    return {};
+mod.service('psychService', function() {
+    this.sessionNo = '';
+    this.testType = '';
 });
 
 
@@ -32,11 +30,12 @@ mod.controller('sessionFormController', ['psychService', '$location', function(p
         vm.testType1 = '';
 
         vm.parseSessionNoInput = function() {
-            if(svc.sessionNo % 2 == 0) {
+            if(vm.sessionNoInput % 2 == 0) {
                 svc.testType = 'colour';
                 vm.testType1 = svc.testType;
             } else {
                 svc.testType = 'order';
+                vm.testType1 = svc.testType;
             }
             $location.path('/ins-1');
         }
