@@ -59,7 +59,7 @@ mod.service('psychService', function() {
 
     this.practiceData = {
         trialCount: 0,
-        displayCount: 0,
+        displayCount: -1,
         colour: [],
         colourUser: [],
         letter: [],
@@ -99,14 +99,10 @@ function routeConfig($routeProvider) {
         controller: 'prePracticeController',
         controllerAs: 'prePracCon',
         templateUrl: 'ins-colour.html'
-    }).when('/practice/start', {
-        controller: 'startController',
+    }).when('/start', {
+        controller: 'practiceController',
         controllerAs: 'oCon',
         templateUrl: 'start.html'
-    }).when('/1', {
-        controller: 'testController,',
-        controllerAs: 'tCon',
-        templateUrl: ''
     })
 }
 
@@ -139,33 +135,51 @@ mod.controller('sessionInitController', ['psychService', '$location', function(p
 
 mod.controller('prePracticeController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
+    var svc = psychService;
 
     vm.beginPractice = function() {
+        svc.practiceData.displayCount++;
         $location.path('/practice/start');
     }
 }]);
 
-mod.controller('timerController', ['psychService', '$location', '$timeout', '$scope', function(psychService, $location, $timeout, $scope) {
+mod.controller('practiceController', ['psychService', '$location', '$timeout', '$scope', function(psychService, $location, $timeout, $scope) {
+    var svc = psychService;
+
+    var startRedirect = function() {
+        $location.path('/start');
+    };
+
     var testRedirect = function() {
-        psychService.tested = true;
         var random = Math.floor(Math.random() * 7);
         $location.path('/' + random);
     };
 
     var betweenRedirect = function() {
-        psychService.tested = false;
         $location.path('/btw');
-    }
+    };
 
-    if(!psychService.tested) {
-        var timer = $timeout(testRedirect, 1000);
+    var timer;
+
+    // timeout 0ms execute logic.
+    if(svc.practiceData.displayCount == -1) {
+        svc.practiceData.displayCount++;
+        startRedirect();
     } else {
-        var timer = $timeout(betweenRedirect, 500);
+        if(!psychService.tested) {
+            svc.testState.tested = true;
+            svc.practiceData.displayCount++;
+            timer = $timeout(testRedirect, 1000);
+        } else {
+            svc.testState.tested = false;
+            timer = $timeout(betweenRedirect, 500);
+        }
+
+        $scope.$on('$destroy', function() {
+            $timeout.cancel(timer);
+        })
     }
 
 
-    $scope.$on('$destroy', function() {
-        $timeout.cancel(timer);
-    })
 }]);
 
