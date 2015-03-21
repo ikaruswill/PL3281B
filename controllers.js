@@ -6,7 +6,7 @@ mod.service('psychService', function() {
     this.testConstants = {
         colourMap: {
             0: '#ffff00', // Yellow
-            1: '#bfbfbf', // Brown
+            1: '#e46c0a', // Brown
             2: '#ff0000', // Red
             3: '#604a7b', // Purple
             4: '#558ed5', // Blue
@@ -105,7 +105,7 @@ mod.service('psychService', function() {
 });
 
 
-//Set up mappings
+//Set up route mappings
 function routeConfig($routeProvider) {
     $routeProvider.when('/', {
         controller: 'sessionInitController',
@@ -135,6 +135,14 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'test.html'
+    }).when('/scoresheet', {
+        controller: 'practiceController',
+        controllerAs: 'pracCon',
+        templateUrl: 'scoresheet.html'
+    }).when('/score', {
+        controller: 'practiceController',
+        controllerAs: 'pracCon',
+        templateUrl: 'score.html'
     })
 }
 
@@ -175,7 +183,7 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
     }
 }]);
 
-mod.controller('practiceController', ['psychService', '$location', '$timeout', '$scope', function(psychService, $location, $timeout, $scope) {
+mod.controller('practiceController', ['psychService', '$location', '$timeout', '$window', '$scope', function(psychService, $location, $timeout, $window, $scope) {
     var vm = this;
     var svc = psychService;
     var randomColour;
@@ -195,6 +203,36 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         $location.path('/btw');
     };
 
+    var scoresheetRedirect = function() {
+        $location.path('/scoresheet');
+    };
+
+    // Called by DOM element button
+    this.scoreRedirect = function() {
+        $location.path('/score');
+    };
+
+    // Called by DOM event spacebar
+    this.startRedirect = function(keyCode) {
+        if(keyCode == 32) {
+            if(svc.testState.trialCount < 5) {
+                svc.testState.trialCount++;
+
+                // Reset test variables
+                svc.testState.tested = false;
+                svc.testState.displayCount = -1;
+                for(var i = 0; i < svc.testState.colourPool.length; i++) {
+                    svc.testState.colourPool[i] = false;
+                    svc.testState.letterPool[i] = false;
+                }
+
+                $location.path('/start');
+            } else {
+                // Redirect to rest page
+            }
+        }
+    };
+
     var timer;
 
     var runLogic = function() {
@@ -206,7 +244,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         if(svc.testState.displayCount == -1) {
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
-        } else if(svc.testState.displayCount < 5){
+        } else if(svc.testState.displayCount < 7){
             if(!svc.testState.tested) {
                 svc.testState.tested = true;
                 svc.testState.displayCount++;
@@ -232,9 +270,15 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 svc.testState.colourPool[randomColour] = true;
                 svc.testState.letterPool[randomLetter] = true;
 
-                // Reset test state every trial
+                // Check if it is the last display
+                if(svc.testState.displayCount != 7) {
+                    timer = $timeout(betweenRedirect, 1000);
+                }
+                // Redirect to score sheet
+                else {
+                    timer = $timeout(scoresheetRedirect, 1000);
+                }
 
-                timer = $timeout(betweenRedirect, 1000);
             } else {
                 vm.currentLetter = '+';
                 svc.testState.tested = false;
@@ -244,31 +288,6 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             $scope.$on('$destroy', function() {
                 $timeout.cancel(timer);
             });
-        }
-        // Trial is over
-        else {
-            if(svc.testState.trialCount < 5) {
-                svc.testState.trialCount++;
-
-                // Reset test variables
-                svc.testState.tested = false;
-                svc.testState.displayCount = -1;
-                for(var i = 0; i < svc.testState.colourPool.length; i++) {
-                    svc.testState.colourPool[i] = false;
-                    svc.testState.letterPool[i] = false;
-                }
-
-
-            }
-
-            // Redirect to score sheet // // Compute score
-            else {
-
-            }
-
-
-
-
         }
     };
 
