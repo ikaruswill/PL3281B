@@ -131,6 +131,10 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'test.html'
+    }).when('/btw', {
+        controller: 'practiceController',
+        controllerAs: 'pracCon',
+        templateUrl: 'test.html'
     })
 }
 
@@ -203,7 +207,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
         } else if(svc.testState.displayCount < 5){
-            if(!svc.tested) {
+            if(!svc.testState.tested) {
                 svc.testState.tested = true;
                 svc.testState.displayCount++;
 
@@ -239,7 +243,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
             $scope.$on('$destroy', function() {
                 $timeout.cancel(timer);
-            })
+            });
         }
         // Trial is over
         else {
