@@ -4,6 +4,9 @@ var mod = angular.module('psych', ['ngRoute']);
 mod.service('psychService', function() {
 
     this.testConstants = {
+        practiceMaxIterations: 5,
+        standardMaxIterations: 12,
+
         colourMap: {
             0: '#ffff00', // Yellow
             1: '#e46c0a', // Brown
@@ -27,9 +30,10 @@ mod.service('psychService', function() {
 
     this.testState = {
         tested: false,
-        iterationCount: 0,
-        trialCount: 4,
+        iterationCount: -1,
+        trialCount: 0,
         displayCount: -1,
+        maxTrials: this.testConstants.practiceMaxIterations,
 
         colourPool: {
             0: false,
@@ -116,11 +120,11 @@ function routeConfig($routeProvider) {
         controllerAs: 'initCon',
         templateUrl: 'ins-common.html'
     }).when('/ins-order', {
-        controller: 'prePracticeController',
+        controller: 'practiceController',
         controllerAs: 'prePracCon',
         templateUrl: 'ins-order.html'
     }).when('/ins-colour', {
-        controller: 'prePracticeController',
+        controller: 'practiceController',
         controllerAs: 'prePracCon',
         templateUrl: 'ins-colour.html'
     }).when('/pause', {
@@ -143,11 +147,19 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'score.html'
+    }).when('/endPractice', {
+        controller: 'endPracticeController',
+        controllerAs: 'endPracCon',
+        templateUrl: 'endpractice'
+    }).when('/break', {
+        controller: 'breakController',
+        controllerAs: 'breakCon',
+        templateUrl: ''
     })
 }
 
 mod.config(routeConfig);
-
+/*
 mod.controller('keyboardListener', ['$scope', function($scope) {
     $scope.keyCode = '';
 
@@ -157,7 +169,7 @@ mod.controller('keyboardListener', ['$scope', function($scope) {
         }
     }
 }]);
-
+*/
 mod.controller('sessionInitController', ['psychService', '$location', function(psychService, $location){
         var vm = this;
         var sessionParams = psychService.sessionParams;
@@ -182,7 +194,7 @@ mod.controller('sessionInitController', ['psychService', '$location', function(p
         }
     }]
 );
-
+/*
 mod.controller('prePracticeController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
     var svc = psychService;
@@ -192,13 +204,10 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
         $location.path('/pause');
     }
 }]);
-
+*/
 mod.controller('practiceController', ['psychService', '$location', '$timeout', '$window', '$scope', function(psychService, $location, $timeout, $window, $scope) {
     var vm = this;
     var svc = psychService;
-    var randomColour;
-    var randomLetter;
-
 
     // View variables
     vm.currentColour = '';
@@ -222,29 +231,38 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         $location.path('/score');
     };
 
-    // Watch keypresses
-    //$scope.$watch($scope.keyCode, this.pauseRedirect);
-
     this.pauseRedirect = function() {
+        // Reset test variables
+        svc.testState.tested = false;
+        svc.testState.displayCount = -1;
+        for(var i = 0; i < Object.keys(svc.testState.colourPool).length; i++) {
+            svc.testState.colourPool[i] = false;
+            svc.testState.letterPool[i] = false;
+        }
+
        // if($scope.keyCode == 32) {
-            if(svc.testState.trialCount < 5) {
-                svc.testState.trialCount++;
-
-                // Reset test variables
-                svc.testState.tested = false;
-                svc.testState.displayCount = -1;
-                for(var i = 0; i < Object.keys(svc.testState.colourPool).length; i++) {
-                    svc.testState.colourPool[i] = false;
-                    svc.testState.letterPool[i] = false;
-                    }
-
+            if(svc.testState.trialCount < svc.testState.maxTrials) { // Check practice.
                 $location.path('/pause');
             } else {
-                // Redirect to rest page
+                svc.testState.iterationCount++;
+
+                // Check if recent iteration is practice
+                if(svc.testState.iterationCount === 0) {
+                    // Set max trials to standard test max
+                    svc.testState.maxTrials = svc.testConstants.standardMaxIterations;
+
+                    // Redirect to end practice pseudo-break;
+                    $location.path('/endPractice');
+                } else {
+                    // Redirect to rest page
+                    $location.path('/break');
+                }
             }
        // }
     };
 
+    var randomColour;
+    var randomLetter;
     var timer;
 
     var runLogic = function() {
@@ -253,10 +271,13 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             $timeout.cancel(logicTimer);
         });
 
-        if(svc.testState.displayCount == -1) {
+        // Display exclamation mark
+        if(svc.testState.displayCount === -1) {
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
-        } else if(svc.testState.displayCount < 7){
+        }
+        // Prevent scoresheet from entering logic block
+        else if(svc.testState.displayCount < 7) {
             if(!svc.testState.tested) {
                 svc.testState.tested = true;
                 svc.testState.displayCount++;
@@ -288,9 +309,9 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 }
                 // Redirect to score sheet
                 else {
+                    svc.testState.trialCount++;
                     timer = $timeout(scoresheetRedirect, 1000);
                 }
-
             } else {
                 vm.currentLetter = '+';
                 svc.testState.tested = false;
@@ -306,3 +327,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
     var logicTimer = $timeout(runLogic, 0);
 }]);
 
+mod.controller('endPracticeController', function() {
+
+
+});
