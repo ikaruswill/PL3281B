@@ -6,6 +6,7 @@ mod.service('psychService', function() {
     this.testConstants = {
         practiceMaxIterations: 5,
         standardMaxIterations: 12,
+        breakDuration: 5, // 60
 
         colourMap: {
             0: '#ffff00', // Yellow
@@ -246,11 +247,11 @@ mod.service('psychService', function() {
     // User data ends here
 
     this.testState = {
-        iterationCount: -1,
-        iterationType: 'practice',
-        trialCount: 4,
+        iterationCount: 0, // -1
+        iterationType: 'standard', // practice
+        trialCount: 10, // 0
         maxTrials: this.testConstants.practiceMaxIterations,
-        displayCount: -1,
+        displayCount: 5, // -1
         tested: false,
 
         storeDest: {
@@ -328,7 +329,7 @@ function routeConfig($routeProvider) {
     }).when('/break', {
         controller: 'breakController',
         controllerAs: 'breakCon',
-        templateUrl: ''
+        templateUrl: 'break.html'
     })
 }
 
@@ -434,13 +435,11 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
                     // Set variables to standard test
                     svc.testState.maxTrials = svc.testConstants.standardMaxIterations;
-                    svc.testState.testType = 'standard';
+                    svc.testState.iterationType = 'standard';
 
                     // Redirect to end practice pseudo-break;
                     $location.path('/endPractice');
                 } else {
-
-
                     // Redirect to rest page
                     $location.path('/break');
                 }
@@ -520,4 +519,33 @@ mod.controller('endPracticeController',['$location', function($location) {
     this.standardPauseRedirect = function() {
         $location.path('/pause');
     }
+}]);
+
+mod.controller('breakController', ['psychService', '$location', '$timeout', function(psychService, $location, $timeout) {
+    var vm = this;
+    var svc = psychService;
+    vm.counter = svc.testConstants.breakDuration;
+
+    vm.pauseRedirect = function() {
+        vm.stop();
+        $location.path('/pause');
+    };
+
+    var decrementCounter = function() {
+        vm.counter--;
+        if(vm.counter !== 0) {
+            timer = $timeout(decrementCounter, 1000)
+        } else {
+            vm.pauseRedirect();
+        }
+    };
+
+    var timer = $timeout(decrementCounter, 1000);
+
+
+
+    vm.stop = function() {
+      $timeout.cancel(timer);
+    };
+
 }]);
