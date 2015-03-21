@@ -75,18 +75,18 @@ mod.service('psychService', function() {
             4: []
         },
         letterAns: {
+            0: [],
             1: [],
             2: [],
             3: [],
-            4: [],
-            5: []
+            4: []
         },
         letterUser: {
+            0: [],
             1: [],
             2: [],
             3: [],
-            4: [],
-            5: []
+            4: []
         }
     };
 
@@ -203,7 +203,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
         } else if(svc.testState.displayCount < 5){
-            if(!psychService.tested) {
+            if(!svc.tested) {
                 svc.testState.tested = true;
                 svc.testState.displayCount++;
 
@@ -225,8 +225,8 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 svc.practiceData.colourAns[svc.testState.trialCount].push(vm.currentColour);
 
                 // Update available sets
-                svc.colourPool[randomColour] = true;
-                svc.letterPool[randomLetter] = true;
+                svc.testState.colourPool[randomColour] = true;
+                svc.testState.letterPool[randomLetter] = true;
 
                 // Reset test state every trial
 
