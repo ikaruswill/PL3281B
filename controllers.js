@@ -28,7 +28,7 @@ mod.service('psychService', function() {
     this.testState = {
         tested: false,
         iterationCount: 0,
-        trialCount: 0,
+        trialCount: 4,
         displayCount: -1,
 
         colourPool: {
@@ -233,10 +233,10 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 // Reset test variables
                 svc.testState.tested = false;
                 svc.testState.displayCount = -1;
-                for(var i = 0; i < svc.testState.colourPool.length; i++) {
+                for(var i = 0; i < Object.keys(svc.testState.colourPool).length; i++) {
                     svc.testState.colourPool[i] = false;
                     svc.testState.letterPool[i] = false;
-                }
+                    }
 
                 $location.path('/pause');
             } else {
@@ -252,10 +252,8 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         $scope.$on('$destroy', function() {
             $timeout.cancel(logicTimer);
         });
-        if(svc.testState.trialCount>0) {
-            $window.alert("Second run!");
-        }
-        if(svc.testState.displayCount === -1) {
+
+        if(svc.testState.displayCount == -1) {
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
         } else if(svc.testState.displayCount < 7){
