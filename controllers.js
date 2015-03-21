@@ -61,18 +61,18 @@ mod.service('psychService', function() {
 
     this.practiceData = {
         colourAns: {
+            0: [],
             1: [],
             2: [],
             3: [],
-            4: [],
-            5: []
+            4: []
         },
         colourUser: {
+            0: [],
             1: [],
             2: [],
             3: [],
-            4: [],
-            5: []
+            4: []
         },
         letterAns: {
             1: [],
@@ -127,6 +127,10 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'pause.html'
+    }).when('/test', {
+        controller: 'practiceController',
+        controllerAs: 'pracCon',
+        templateUrl: 'test.html'
     })
 }
 
@@ -207,10 +211,10 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 // While number has occurred in testState keep generating
                 do {
                     randomLetter = Math.floor(Math.random() * 7);
-                } while(svc.letterPool[randomLetter]);
+                } while(svc.testState.letterPool[randomLetter]);
                 do {
                     randomColour = Math.floor(Math.random() * 7);
-                } while(svc.colourPool[randomColour]);
+                } while(svc.testState.colourPool[randomColour]);
 
                 // Update view
                 vm.currentLetter = svc.testConstants.letterMap[randomLetter];
