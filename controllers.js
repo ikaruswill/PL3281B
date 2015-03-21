@@ -148,15 +148,25 @@ function routeConfig($routeProvider) {
 
 mod.config(routeConfig);
 
+mod.controller('keyboardListener', ['$scope', function($scope) {
+    $scope.keyCode = '';
+
+    $scope.keyPress = function(event) {
+        if(event.which === 32) {
+            $scope.keyCode = event.which;
+        }
+    }
+}]);
+
 mod.controller('sessionInitController', ['psychService', '$location', function(psychService, $location){
         var vm = this;
         var sessionParams = psychService.sessionParams;
         vm.sessionNoInput = '';
 
         vm.parseSessionNoInput = function() {
-            if(vm.sessionNoInput % 2 == 1) {
+            if(vm.sessionNoInput % 2 === 1) {
                 sessionParams.testType = 'order';
-            } else if(vm.sessionNoInput % 2 == 0){
+            } else if(vm.sessionNoInput % 2 === 0){
                 sessionParams.testType = 'colour';
             }
             sessionParams.sessionNo = vm.sessionNoInput;
@@ -212,9 +222,11 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         $location.path('/score');
     };
 
-    // Called by DOM event spacebar
-    this.startRedirect = function(keyCode) {
-        if(keyCode == 32) {
+    // Watch keypresses
+    //$scope.$watch($scope.keyCode, this.pauseRedirect);
+
+    this.pauseRedirect = function() {
+       // if($scope.keyCode == 32) {
             if(svc.testState.trialCount < 5) {
                 svc.testState.trialCount++;
 
@@ -226,11 +238,11 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                     svc.testState.letterPool[i] = false;
                 }
 
-                $location.path('/start');
+                $location.path('/pause');
             } else {
                 // Redirect to rest page
             }
-        }
+       // }
     };
 
     var timer;
@@ -240,8 +252,10 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         $scope.$on('$destroy', function() {
             $timeout.cancel(logicTimer);
         });
-
-        if(svc.testState.displayCount == -1) {
+        if(svc.testState.trialCount>0) {
+            $window.alert("Second run!");
+        }
+        if(svc.testState.displayCount === -1) {
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
         } else if(svc.testState.displayCount < 7){
