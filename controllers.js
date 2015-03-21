@@ -123,10 +123,10 @@ function routeConfig($routeProvider) {
         controller: 'prePracticeController',
         controllerAs: 'prePracCon',
         templateUrl: 'ins-colour.html'
-    }).when('/start', {
+    }).when('/pause', {
         controller: 'practiceController',
-        controllerAs: 'oCon',
-        templateUrl: 'start.html'
+        controllerAs: 'pracCon',
+        templateUrl: 'pause.html'
     })
 }
 
@@ -163,7 +163,7 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
 
     vm.beginPractice = function() {
         svc.practiceData.displayCount++;
-        $location.path('/start');
+        $location.path('/pause');
     }
 }]);
 
@@ -180,7 +180,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
     // Redirects
     var testRedirect = function() {
-        $location.path('/' + randomColour);
+        $location.path('/test');
     };
 
     var betweenRedirect = function() {
@@ -195,13 +195,13 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             $timeout.cancel(logicTimer);
         });
 
-        if(svc.practiceData.displayCount == -1) {
-            svc.practiceData.displayCount++;
+        if(svc.testState.displayCount == -1) {
+            svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
-        } else if(svc.practiceData.displayCount < 5){
+        } else if(svc.testState.displayCount < 5){
             if(!psychService.tested) {
                 svc.testState.tested = true;
-                svc.practiceData.displayCount++;
+                svc.testState.displayCount++;
 
                 // Generate random numbers for colour and letter
                 // While number has occurred in testState keep generating
@@ -228,6 +228,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
                 timer = $timeout(betweenRedirect, 1000);
             } else {
+                vm.currentLetter = '+';
                 svc.testState.tested = false;
                 timer = $timeout(testRedirect, 500);
             }
@@ -238,11 +239,30 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         }
         // Trial is over
         else {
-            // Reset test variables
+            if(svc.testState.trialCount < 5) {
+                svc.testState.trialCount++;
+
+                // Reset test variables
+                svc.testState.tested = false;
+                svc.testState.displayCount = -1;
+                for(var i = 0; i < svc.testState.colourPool.length; i++) {
+                    svc.testState.colourPool[i] = false;
+                    svc.testState.letterPool[i] = false;
+                }
+
+
+            }
+
             // Redirect to score sheet // // Compute score
+            else {
+
+            }
+
+
+
 
         }
-    }
+    };
 
     var logicTimer = $timeout(runLogic, 0);
 }]);
