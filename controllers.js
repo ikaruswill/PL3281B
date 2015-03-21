@@ -247,7 +247,7 @@ mod.service('psychService', function() {
     // User data ends here
 
     this.testState = {
-        iterationCount: 0, // -1
+        iterationCount: 2, // -1
         iterationType: 'standard', // practice
         trialCount: 10, // 0
         maxTrials: this.testConstants.practiceMaxIterations,
@@ -322,7 +322,7 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'score.html'
-    }).when('/endPractice', {
+    }).when('/endpractice', {
         controller: 'endPracticeController',
         controllerAs: 'endPracCon',
         templateUrl: 'endpractice.html'
@@ -330,6 +330,10 @@ function routeConfig($routeProvider) {
         controller: 'breakController',
         controllerAs: 'breakCon',
         templateUrl: 'break.html'
+    }).when('/thankyou', {
+        controller: 'exportController',
+        controllerAs: 'expCon',
+        templateUrl: 'thankyou.html'
     })
 }
 
@@ -438,10 +442,14 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                     svc.testState.iterationType = 'standard';
 
                     // Redirect to end practice pseudo-break;
-                    $location.path('/endPractice');
+                    $location.path('/endpractice');
                 } else {
-                    // Redirect to rest page
-                    $location.path('/break');
+                    if(svc.testState.iterationCount < 3) {
+                        // Redirect to rest page
+                        $location.path('/break');
+                    } else {
+                        $location.path('thankyou');
+                    }
                 }
             }
        // }
@@ -542,10 +550,12 @@ mod.controller('breakController', ['psychService', '$location', '$timeout', func
 
     var timer = $timeout(decrementCounter, 1000);
 
-
-
     vm.stop = function() {
       $timeout.cancel(timer);
     };
+
+}]);
+
+mod.controller('exportController', ['psychService', function(psychService) {
 
 }]);
