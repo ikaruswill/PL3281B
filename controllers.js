@@ -28,34 +28,6 @@ mod.service('psychService', function() {
         }
     };
 
-    this.testState = {
-        tested: false,
-        iterationCount: -1,
-        trialCount: 4,
-        displayCount: -1,
-        maxTrials: this.testConstants.practiceMaxIterations,
-
-        colourPool: {
-            0: false,
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false
-        },
-
-        letterPool: {
-            0: false,
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false
-        }
-    };
-
     // User data begins here
 
     this.sessionParams = {
@@ -95,17 +67,219 @@ mod.service('psychService', function() {
     };
 
     this.test1Data = {
-
+        colourAns: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        colourUser: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        letterAns: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        letterUser: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        }
     };
 
     this.test2Data = {
-
+        colourAns: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        colourUser: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        letterAns: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        letterUser: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        }
     };
 
     this.test3Data = {
-
+        colourAns: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        colourUser: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        letterAns: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        },
+        letterUser: {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: [],
+            9: [],
+            10:[],
+            11:[]
+        }
     };
 
+    // User data ends here
+
+    this.testState = {
+        iterationCount: -1,
+        iterationType: 'practice',
+        trialCount: 4,
+        maxTrials: this.testConstants.practiceMaxIterations,
+        displayCount: -1,
+        tested: false,
+
+        storeDest: {
+            0: this.practiceData,
+            1: this.test1Data,
+            2: this.test2Data,
+            3: this.test3Data
+        },
+
+        colourPool: {
+            0: false,
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false
+        },
+
+        letterPool: {
+            0: false,
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false
+        }
+    };
 });
 
 
@@ -246,20 +420,27 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         this.resetTestState();
 
        // if($scope.keyCode == 32) {
-            if(svc.testState.trialCount < svc.testState.maxTrials) { // Check practice.
+            // End of trial
+            if(svc.testState.trialCount < svc.testState.maxTrials) {
                 $location.path('/pause');
-            } else {
+            }
+            // End of iteration
+            else {
                 svc.testState.iterationCount++;
+                svc.testState.trialCount = 0;
 
-                $window.alert("End Iteration!");
                 // Check if recent iteration is practice
-                if(svc.testState.iterationCount === 0) {
-                    // Set max trials to standard test max
+                if(svc.testState.iterationType === 'practice') {
+
+                    // Set variables to standard test
                     svc.testState.maxTrials = svc.testConstants.standardMaxIterations;
-                    $window.alert("End Practice!")
+                    svc.testState.testType = 'standard';
+
                     // Redirect to end practice pseudo-break;
                     $location.path('/endPractice');
                 } else {
+
+
                     // Redirect to rest page
                     $location.path('/break');
                 }
@@ -270,6 +451,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
     var randomColour;
     var randomLetter;
     var timer;
+    var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
 
     var runLogic = function() {
         // Decommission logic timer
@@ -302,8 +484,8 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 vm.currentColour = svc.testConstants.colourMap[randomColour];
 
                 // Update test answers
-                svc.practiceData.letterAns[svc.testState.trialCount].push(vm.currentLetter);
-                svc.practiceData.colourAns[svc.testState.trialCount].push(vm.currentColour);
+                storageDest.letterAns[svc.testState.trialCount].push(vm.currentLetter);
+                storageDest.colourAns[svc.testState.trialCount].push(vm.currentColour);
 
                 // Update available sets
                 svc.testState.colourPool[randomColour] = true;
@@ -333,9 +515,9 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
     var logicTimer = $timeout(runLogic, 0);
 }]);
 
-mod.controller('endPracticeController', function() {
+mod.controller('endPracticeController',['$location', function($location) {
 
     this.standardPauseRedirect = function() {
         $location.path('/pause');
     }
-});
+}]);
