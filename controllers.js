@@ -251,7 +251,7 @@ mod.service('psychService', function() {
         iterationType: 'standard', // practice
         trialCount: 10, // 0
         maxTrials: this.testConstants.practiceMaxIterations,
-        displayCount: 5, // -1
+        displayCount: -1, // -1
         tested: false,
 
         storeDest: {
@@ -305,7 +305,7 @@ function routeConfig($routeProvider) {
     }).when('/pause', {
         controller: 'practiceController',
         controllerAs: 'pracCon',
-        templateUrl: 'pause.html'
+        templateUrl: 'test.html'
     }).when('/test', {
         controller: 'practiceController',
         controllerAs: 'pracCon',
@@ -468,6 +468,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
         // Display exclamation mark
         if(svc.testState.displayCount === -1) {
+            vm.currentLetter = '!';
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
         }
