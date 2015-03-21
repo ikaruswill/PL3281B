@@ -120,11 +120,11 @@ function routeConfig($routeProvider) {
         controllerAs: 'initCon',
         templateUrl: 'ins-common.html'
     }).when('/ins-order', {
-        controller: 'practiceController',
+        controller: 'prePracticeController',
         controllerAs: 'prePracCon',
         templateUrl: 'ins-order.html'
     }).when('/ins-colour', {
-        controller: 'practiceController',
+        controller: 'prePracticeController',
         controllerAs: 'prePracCon',
         templateUrl: 'ins-colour.html'
     }).when('/pause', {
@@ -150,7 +150,7 @@ function routeConfig($routeProvider) {
     }).when('/endPractice', {
         controller: 'endPracticeController',
         controllerAs: 'endPracCon',
-        templateUrl: 'endpractice'
+        templateUrl: 'endpractice.html'
     }).when('/break', {
         controller: 'breakController',
         controllerAs: 'breakCon',
@@ -194,7 +194,7 @@ mod.controller('sessionInitController', ['psychService', '$location', function(p
         }
     }]
 );
-/*
+
 mod.controller('prePracticeController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
     var svc = psychService;
@@ -204,7 +204,7 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
         $location.path('/pause');
     }
 }]);
-*/
+
 mod.controller('practiceController', ['psychService', '$location', '$timeout', '$window', '$scope', function(psychService, $location, $timeout, $window, $scope) {
     var vm = this;
     var svc = psychService;
