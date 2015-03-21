@@ -31,7 +31,7 @@ mod.service('psychService', function() {
     this.testState = {
         tested: false,
         iterationCount: -1,
-        trialCount: 0,
+        trialCount: 4,
         displayCount: -1,
         maxTrials: this.testConstants.practiceMaxIterations,
 
@@ -231,14 +231,19 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         $location.path('/score');
     };
 
-    this.pauseRedirect = function() {
-        // Reset test variables
+    // Reset test state
+    this.resetTestState = function() {
+
         svc.testState.tested = false;
         svc.testState.displayCount = -1;
         for(var i = 0; i < Object.keys(svc.testState.colourPool).length; i++) {
             svc.testState.colourPool[i] = false;
             svc.testState.letterPool[i] = false;
         }
+    };
+
+    this.pauseRedirect = function() {
+        this.resetTestState();
 
        // if($scope.keyCode == 32) {
             if(svc.testState.trialCount < svc.testState.maxTrials) { // Check practice.
@@ -246,11 +251,12 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             } else {
                 svc.testState.iterationCount++;
 
+                $window.alert("End Iteration!");
                 // Check if recent iteration is practice
                 if(svc.testState.iterationCount === 0) {
                     // Set max trials to standard test max
                     svc.testState.maxTrials = svc.testConstants.standardMaxIterations;
-
+                    $window.alert("End Practice!")
                     // Redirect to end practice pseudo-break;
                     $location.path('/endPractice');
                 } else {
@@ -329,5 +335,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
 mod.controller('endPracticeController', function() {
 
-
+    this.standardPauseRedirect = function() {
+        $location.path('/pause');
+    }
 });
