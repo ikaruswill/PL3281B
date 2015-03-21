@@ -28,6 +28,8 @@ mod.service('psychService', function() {
     this.testState = {
         tested: false,
         iterationCount: 0,
+        trialCount: 0,
+        displayCount: -1,
 
         colourPool: {
             0: false,
@@ -58,12 +60,34 @@ mod.service('psychService', function() {
     };
 
     this.practiceData = {
-        trialCount: 0,
-        displayCount: -1,
-        colour: [],
-        colourUser: [],
-        letter: [],
-        letterUser: []
+        colourAns: {
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: []
+        },
+        colourUser: {
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: []
+        },
+        letterAns: {
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: []
+        },
+        letterUser: {
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: []
+        }
     };
 
     this.test1Data = {
@@ -139,20 +163,24 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
 
     vm.beginPractice = function() {
         svc.practiceData.displayCount++;
-        $location.path('/practice/start');
+        $location.path('/start');
     }
 }]);
 
 mod.controller('practiceController', ['psychService', '$location', '$timeout', '$scope', function(psychService, $location, $timeout, $scope) {
+    var vm = this;
     var svc = psychService;
+    var randomColour;
+    var randomLetter;
 
-    var startRedirect = function() {
-        $location.path('/start');
-    };
 
+    // View variables
+    vm.currentColour = '';
+    vm.currentLetter = '';
+
+    // Redirects
     var testRedirect = function() {
-        var random = Math.floor(Math.random() * 7);
-        $location.path('/' + random);
+        $location.path('/' + randomColour);
     };
 
     var betweenRedirect = function() {
@@ -161,25 +189,61 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
     var timer;
 
-    // timeout 0ms execute logic.
-    if(svc.practiceData.displayCount == -1) {
-        svc.practiceData.displayCount++;
-        startRedirect();
-    } else {
-        if(!psychService.tested) {
-            svc.testState.tested = true;
+    var runLogic = function() {
+        // Decommission logic timer
+        $scope.$on('$destroy', function() {
+            $timeout.cancel(logicTimer);
+        });
+
+        if(svc.practiceData.displayCount == -1) {
             svc.practiceData.displayCount++;
             timer = $timeout(testRedirect, 1000);
-        } else {
-            svc.testState.tested = false;
-            timer = $timeout(betweenRedirect, 500);
-        }
+        } else if(svc.practiceData.displayCount < 5){
+            if(!psychService.tested) {
+                svc.testState.tested = true;
+                svc.practiceData.displayCount++;
 
-        $scope.$on('$destroy', function() {
-            $timeout.cancel(timer);
-        })
+                // Generate random numbers for colour and letter
+                // While number has occurred in testState keep generating
+                do {
+                    randomLetter = Math.floor(Math.random() * 7);
+                } while(svc.letterPool[randomLetter]);
+                do {
+                    randomColour = Math.floor(Math.random() * 7);
+                } while(svc.colourPool[randomColour]);
+
+                // Update view
+                vm.currentLetter = svc.testConstants.letterMap[randomLetter];
+                vm.currentColour = svc.testConstants.colourMap[randomColour];
+
+                // Update test answers
+                svc.practiceData.letterAns[svc.testState.trialCount].push(vm.currentLetter);
+                svc.practiceData.colourAns[svc.testState.trialCount].push(vm.currentColour);
+
+                // Update available sets
+                svc.colourPool[randomColour] = true;
+                svc.letterPool[randomLetter] = true;
+
+                // Reset test state every trial
+
+                timer = $timeout(betweenRedirect, 1000);
+            } else {
+                svc.testState.tested = false;
+                timer = $timeout(testRedirect, 500);
+            }
+
+            $scope.$on('$destroy', function() {
+                $timeout.cancel(timer);
+            })
+        }
+        // Trial is over
+        else {
+            // Reset test variables
+            // Redirect to score sheet // // Compute score
+
+        }
     }
 
-
+    var logicTimer = $timeout(runLogic, 0);
 }]);
 
