@@ -44,28 +44,28 @@ mod.service('psychService', function() {
     };
 
     this.practiceData = {
-        colourAns: {
+        colourShown: {
             0: [],
             1: [],
             2: [],
             3: [],
             4: []
         },
-        colourUser: {
+        colourPicked: {
             0: [],
             1: [],
             2: [],
             3: [],
             4: []
         },
-        letterAns: {
+        letterShown: {
             0: [],
             1: [],
             2: [],
             3: [],
             4: []
         },
-        letterUser: {
+        letterPicked: {
             0: [],
             1: [],
             2: [],
@@ -75,7 +75,7 @@ mod.service('psychService', function() {
     };
 
     this.test1Data = {
-        colourAns: {
+        colourShown: {
             0: [],
             1: [],
             2: [],
@@ -89,7 +89,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        colourUser: {
+        colourPicked: {
             0: [],
             1: [],
             2: [],
@@ -103,7 +103,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterAns: {
+        letterShown: {
             0: [],
             1: [],
             2: [],
@@ -117,7 +117,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterUser: {
+        letterPicked: {
             0: [],
             1: [],
             2: [],
@@ -134,7 +134,7 @@ mod.service('psychService', function() {
     };
 
     this.test2Data = {
-        colourAns: {
+        colourShown: {
             0: [],
             1: [],
             2: [],
@@ -148,7 +148,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        colourUser: {
+        colourPicked: {
             0: [],
             1: [],
             2: [],
@@ -162,7 +162,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterAns: {
+        letterShown: {
             0: [],
             1: [],
             2: [],
@@ -176,7 +176,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterUser: {
+        letterPicked: {
             0: [],
             1: [],
             2: [],
@@ -193,7 +193,7 @@ mod.service('psychService', function() {
     };
 
     this.test3Data = {
-        colourAns: {
+        colourShown: {
             0: [],
             1: [],
             2: [],
@@ -207,7 +207,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        colourUser: {
+        colourPicked: {
             0: [],
             1: [],
             2: [],
@@ -221,7 +221,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterAns: {
+        letterShown: {
             0: [],
             1: [],
             2: [],
@@ -235,7 +235,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterUser: {
+        letterPicked: {
             0: [],
             1: [],
             2: [],
@@ -255,12 +255,15 @@ mod.service('psychService', function() {
 
     this.testState = {
         iterationCount: -1, // -1 to include practice
-        iterationType: 'standard', // practice
+        iterationType: 'practice', // practice
         trialCount: 0, // 0
         maxTrials: this.testConstants.practiceMaxIterations,
         displayCount: -1, // -1 to include exclamation
+
         tested: false,
         prevAudio: -1,
+        audioType: 0,
+
 
         storeDest: {
             0: this.practiceData,
@@ -287,9 +290,28 @@ mod.service('psychService', function() {
             4: false,
             5: false,
             6: false
+        },
+
+        audioTypePool: {
+            0: false, // No sound (Quiet sound)
+            1: false, // 1 sound (Homo sound)
+            2: false // 2 sounds (Hetero sound)
         }
     };
 });
+
+mod.service('audioService', ['$document', function($document) {
+    var audioElement = $document[0].createElement('audio');
+
+    this.playQuietAudio = function() {
+        audioElement.src = 'audio/Quiet.wav';
+        audioElement.play();
+    };
+
+    this.stopQuietAudio = function() {
+        audioElement.stop();
+    };
+}]);
 
 
 //Set up route mappings
@@ -439,10 +461,16 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
             if(svc.testState.trialCount < svc.testState.maxTrials) {
                 $location.path('/pause');
             }
-            // End of iteration
+            // End of iteration (First run: after practice)
             else {
                 svc.testState.iterationCount++;
                 svc.testState.trialCount = 0;
+
+                // Generate random sound type
+                do {
+                    svc.testState.audioType = Math.floor(Math.random * 3);
+                } while(svc.testState.audioTypePool[svc.testState.audioType]);
+                svc.testState.audioTypePool[svc.testState.audioType] = true;
 
                 // Check if recent iteration is practice
                 if(svc.testState.iterationType === 'practice') {
@@ -472,7 +500,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
     var audioPath;
     var audioMap = svc.testConstants.audioMap;
 
-    var playAudio = function() {
+    var playHeteroAudio = function() {
         var audioNumber;
 
         // Generate random number and remember occurrence
@@ -485,7 +513,7 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         audioPath = "audio/" + audioMap[audioNumber];
         audioElement.src = audioPath;
         audioElement.play();
-        audioTimer = $timeout(playAudio, 500);
+        audioTimer = $timeout(playHeteroAudio, 500);
     };
 
     var stopSoundTimer = function() {
@@ -514,10 +542,25 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         // Prevent scoresheet from entering logic block
         else if(svc.testState.displayCount < 7) {
             if(!svc.testState.tested) {
-
-                // Start audio
+                // Create audio element using jQuery
                 audioElement = $document[0].createElement('audio');
-                playAudio();
+
+                // Play audio based on audio type
+                if(svc.testState.iterationType === 'practice') {
+                    playHeteroAudio();
+                } else {
+                    switch(svc.testState.audioType) {
+                        case 0:
+                            // Play quiet
+                            break;
+                        case 1:
+                            // Play homo
+                            break;
+                        case 2:
+                            playHeteroAudio();
+                            break;
+                    }
+                }
 
                 // Set variables for next view
                 svc.testState.tested = true;
@@ -537,8 +580,8 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
                 vm.currentColour = svc.testConstants.colourMap[randomColour];
 
                 // Update test answers
-                storageDest.letterAns[svc.testState.trialCount].push(vm.currentLetter);
-                storageDest.colourAns[svc.testState.trialCount].push(vm.currentColour);
+                storageDest.letterShown[svc.testState.trialCount].push(vm.currentLetter);
+                storageDest.colourShown[svc.testState.trialCount].push(vm.currentColour);
 
                 // Update available sets
                 svc.testState.colourPool[randomColour] = true;
