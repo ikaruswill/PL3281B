@@ -26,6 +26,13 @@ mod.service('psychService', function() {
             4: 'V',
             5: 'X',
             6: 'Z'
+        },
+
+        audioMap : {
+            0: 'G.wav',
+            1: 'L.wav',
+            2: 'M.wav',
+            3: 'R.wav'
         }
     };
 
@@ -253,6 +260,7 @@ mod.service('psychService', function() {
         maxTrials: this.testConstants.practiceMaxIterations,
         displayCount: -1, // -1 to include exclamation
         tested: false,
+        prevAudio: -1,
 
         storeDest: {
             0: this.practiceData,
@@ -399,13 +407,11 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
 
     var betweenRedirect = function() {
         stopSoundTimer();
-        reinitAudioOccur();
         $location.path('/btw');
     };
 
     var scoresheetRedirect = function() {
         stopSoundTimer();
-        reinitAudioOccur();
         $location.path('/scoresheet');
     };
 
@@ -464,43 +470,28 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
     var audioElement;
     var audioTimer;
     var audioPath;
-    var audioMap = {
-        0: 'G.wav',
-        1: 'L.wav',
-        2: 'M.wav',
-        3: 'R.wav'
-    };
-    var audioOccurrence = {
-        0: false,
-        1: false,
-        2: false,
-        3: false
-    };
+    var audioMap = svc.testConstants.audioMap;
 
-    var audioControl = function() {
+    var playAudio = function() {
         var audioNumber;
 
+        // Generate random number and remember occurrence
         do {
             audioNumber = Math.floor(Math.random() * 4);
-        } while(audioOccurrence[audioNumber]);
-        audioOccurrence[audioNumber] = true;
+        } while(audioNumber === svc.testState.prevAudio);
+        svc.testState.prevAudio = audioNumber;
 
+        // Set path and play
         audioPath = "audio/" + audioMap[audioNumber];
         audioElement.src = audioPath;
         audioElement.play();
-        audioTimer = $timeout(audioControl, 450);
+        audioTimer = $timeout(playAudio, 500);
     };
 
     var stopSoundTimer = function() {
         $scope.$on('$destroy', function() {
             $timeout.cancel(audioTimer);
         });
-    };
-
-    var reinitAudioOccur = function() {
-        for(var i = 0; i < 4; i++) {
-            audioOccurrence[i] = false;
-        }
     };
 
     var randomColour;
@@ -523,9 +514,10 @@ mod.controller('practiceController', ['psychService', '$location', '$timeout', '
         // Prevent scoresheet from entering logic block
         else if(svc.testState.displayCount < 7) {
             if(!svc.testState.tested) {
+
                 // Start audio
                 audioElement = $document[0].createElement('audio');
-                audioTimer = $timeout(audioControl, 500);
+                playAudio();
 
                 // Set variables for next view
                 svc.testState.tested = true;
