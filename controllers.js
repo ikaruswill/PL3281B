@@ -299,10 +299,12 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
 
     vm.heteroPlaying = false;
     vm.heteroAudioSequence = [];
-    var currentHeteroIndex = 0;
+    var currentHeteroSequenceIndex = 0;
 
     vm.homoPlaying = false;
     var prevHomoAudio = -1; // -1
+    var currentHomoFile;
+
     vm.audioType = 0; // 0
 
     var homoTimer;
@@ -328,7 +330,7 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
         /*do {
             randomAudioType = Math.floor(Math.random() * 3);
         } while (vm.audioTypePool[randomAudioType]);*/
-        randomAudioType = 2;
+        randomAudioType = 1;
         vm.audioTypePool = true;
         vm.audioType = randomAudioType;
         $window.alert("Audio Type Final: " + vm.audioType);
@@ -359,6 +361,7 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
         vm.quietPlaying = false;
     };
 
+
     vm.initHomo = function() {
         var randomNumberHomo;
         // Generate random audio and remember past audio
@@ -366,13 +369,13 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
             randomNumberHomo = Math.floor(Math.random() * vm.audioFileCount);
         }while(randomNumberHomo === prevHomoAudio);
         prevHomoAudio = randomNumberHomo;
-        audioElement.src = audioPathMap[randomNumberHomo];
+        currentHomoFile = randomNumberHomo;
     };
 
     vm.playHomo = function() {
-        audioElement.loop = true;
+        audioElement.src = audioPathMap[currentHomoFile];
         audioElement.play();
-        homoTimer = $timeout(vm.playHomo, 250);
+        homoTimer = $timeout(vm.playHomo, vm.audioDuration);
         vm.homoPlaying = true;
     };
 
@@ -424,8 +427,8 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
 
 
     vm.playHetero = function() {
-        audioElement.src = audioPathMap[vm.heteroAudioSequence[currentHeteroIndex]];
-        currentHeteroIndex++;
+        audioElement.src = audioPathMap[vm.heteroAudioSequence[currentHeteroSequenceIndex]];
+        currentHeteroSequenceIndex++;
         audioElement.play();
         heteroTimer = $timeout(vm.playHetero, vm.audioDuration);
         vm.heteroPlaying = true;
