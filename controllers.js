@@ -26,10 +26,10 @@ mod.service('psychService', function() {
             0: 'Yellow',
             1: 'Brown',
             2: 'Red',
-            3: '#604a7b', // Purple
-            4: '#558ed5', // Blue
-            5: '#00b050', // Green
-            6: '#bfbfbf' // Grey
+            3: 'Purple',
+            4: 'Blue',
+            5: 'Green',
+            6: 'Grey'
         },
 
         letterMap: {
@@ -53,96 +53,96 @@ mod.service('psychService', function() {
     this.practiceData = {
         colourShown: {
             0: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             1: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             2: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             3: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             4: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             }
         },
         colourPicked: {
             0: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             1: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             2: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             3: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             },
             4: {
-                B: -1,
-                H: -1,
-                J: -1,
-                Q: -1,
-                V: -1,
-                X: -1,
-                Z: -1
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
             }
         },
         orderShown: {
@@ -1293,6 +1293,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
        // if($scope.keyCode == 32) {
             // End of trial
             if(svc.testState.trialCount < svc.testState.maxTrials) {
+                svc.testState.trialCount++;
                 $location.path('/pause');
             }
             // End of iteration (First run: after practice)
@@ -1330,7 +1331,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
     vm.score = 0;
     vm.maxScore = svc.testConstants.maxDisplays;
-    vm.percentageScore = vm.score * 100 / vm.maxScore;
+    vm.percentageScore;
 
     var runLogic = function() {
         // Decommission logic timer on unload
@@ -1378,10 +1379,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
             }
 
             if(!svc.testState.tested) {
-                // Set variables for next view
-                svc.testState.tested = true;
-                svc.testState.displayCount++;
-
                 // Generate random numbers for colour and letter
                 // While number has occurred in testState keep generating
                 do {
@@ -1399,10 +1396,16 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                 // Update test answers
                 storageDest.orderShown[svc.testState.trialCount].push(vm.currentLetter);
                 storageDest.colourShown[svc.testState.trialCount][vm.currentLetter] = vm.currentColour;
+                console.log('Letter shown stored: ' + storageDest.orderShown[svc.testState.trialCount][svc.testState.displayCount]);
+                console.log('Colour Shown stored: ' + storageDest.colourShown[svc.testState.trialCount][vm.currentLetter]);
 
                 // Update available sets
                 svc.testState.colourPool[randomColour] = true;
                 svc.testState.letterPool[randomLetter] = true;
+
+                // Set variables for next view
+                svc.testState.tested = true;
+                svc.testState.displayCount++;
 
                 // Check if it is the last display
                 if(svc.testState.displayCount != 7) {
@@ -1410,7 +1413,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                 }
                 // Redirect to score sheet
                 else {
-                    svc.testState.trialCount++;
                     timer = $timeout(scoresheetRedirect, 1000);
                 }
             } else if(svc.testState.tested) {
@@ -1425,23 +1427,28 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         }
         // Score computation for /score
         else {
+            console.log('iterationCount: ' + svc.testState.iterationCount);
+
+            console.log('trialCount: ' + svc.testState.trialCount);
             for(var i = 0; i < svc.testConstants.maxDisplays; i++) {
-                console.log(svc.testState.trialCount);
                 if(svc.sessionParams.testType === 'order') {
-                    console.log('orderShown: ' + storageDest.orderPicked[svc.testState.trialCount][i]);
+                    console.log('orderPicked: ' + storageDest.orderPicked[svc.testState.trialCount][i]);
                     console.log('orderShown: ' + storageDest.orderShown[svc.testState.trialCount][i]);
                     if(storageDest.orderPicked[svc.testState.trialCount][i] === storageDest.orderShown[svc.testState.trialCount][i]) {
                         vm.score++;
                     }
                 } else if(svc.sessionParams.testType === 'colour') {
-                    console.log('colourPicked: ' + storageDest.colourPicked[svc.testState.trialCount][i]);
-                    console.log('colourShown: ' + storageDest.colourShown[svc.testState.trialCount][i]);
-                    if(storageDest.colourPicked[svc.testState.trialCount][i] === storageDest.colourShown[svc.testState.trialCount][i]) {
+                    var currentLetter = svc.testConstants.letterMap[i];
+                    console.log('colourPicked: ' + storageDest.colourPicked[svc.testState.trialCount][currentLetter]);
+                    console.log('colourShown: ' + storageDest.colourShown[svc.testState.trialCount][currentLetter]);
+
+                    if(storageDest.colourPicked[svc.testState.trialCount][currentLetter] === storageDest.colourShown[svc.testState.trialCount][currentLetter]) {
                         vm.score++;
                     }
                 }
             }
             storageDest.score[svc.testState.trialCount] = vm.score;
+            vm.percentageScore = vm.score * 100 / vm.maxScore;
         }
     };
 
@@ -1525,7 +1532,7 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
     vm.submitScore = function() {
         for(var j = 0; j < svc.testConstants.maxDisplays; j++) {
             storageDest.orderPicked[svc.testState.trialCount][j] = vm.dropped[j].letter;
-            storageDest.colourPicked[svc.testState.trialCount][vm.dropped[j].letter] = svc.testConstants.colourMap[vm.dropped[j].index];
+            storageDest.colourPicked[svc.testState.trialCount][vm.dropped[j].letter] = svc.testConstants.colourMap[j];
         }
         vm.scoreRedirect();
     };
@@ -1537,6 +1544,7 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
     vm.onDropComplete = function(box, data, event) {
         if (vm.dropped.indexOf(data) == -1) {
             vm.dropped[box.value] = data;
+            console.log('Picked: ' + vm.dropped[box.value].letter + ":" + box.colour);
         }
     };
 
