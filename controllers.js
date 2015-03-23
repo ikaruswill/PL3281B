@@ -253,9 +253,9 @@ mod.service('psychService', function() {
     this.testState = {
         iterationCount: -1, // -1 to include practice
         iterationType: 'practice', // practice
-        trialCount: 4, // 0
+        trialCount: 0, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
-        displayCount: 6, // -1 to include exclamation
+        displayCount: -1, // -1 to include exclamation
 
         tested: false,
 
@@ -327,13 +327,11 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
     // Generate random audio type
     vm.getRandomAudioType = function() {
         var randomAudioType;
-        /*do {
+        do {
             randomAudioType = Math.floor(Math.random() * 3);
-        } while (vm.audioTypePool[randomAudioType]);*/
-        randomAudioType = 1;
+        } while (vm.audioTypePool[randomAudioType]);
         vm.audioTypePool = true;
         vm.audioType = randomAudioType;
-        $window.alert("Audio Type Final: " + vm.audioType);
     };
 
     // Stop all audio
@@ -423,8 +421,6 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
             }
         }
     };
-
-
 
     vm.playHetero = function() {
         audioElement.src = audioPathMap[vm.heteroAudioSequence[currentHeteroSequenceIndex]];
