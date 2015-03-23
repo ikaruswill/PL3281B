@@ -970,7 +970,7 @@ mod.service('psychService', function() {
         iterationType: 'practice', // practice
         trialCount: 0, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
-        displayCount: 6, // -1 to include exclamation
+        displayCount: -1, // -1 to include exclamation
 
         tested: false,
 
@@ -1328,6 +1328,9 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var randomLetter;
     var timer;
     var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
+    vm.score = 0;
+    vm.maxScore = svc.testConstants.maxDisplays;
+    vm.percentageScore = vm.score * 100 / vm.maxScore;
 
     var runLogic = function() {
         // Decommission logic timer on unload
@@ -1422,7 +1425,23 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         }
         // Score computation for /score
         else {
-            storageDest
+            for(var i = 0; i < svc.testConstants.maxDisplays; i++) {
+                console.log(svc.testState.trialCount);
+                if(svc.sessionParams.testType === 'order') {
+                    console.log('orderShown: ' + storageDest.orderPicked[svc.testState.trialCount][i]);
+                    console.log('orderShown: ' + storageDest.orderShown[svc.testState.trialCount][i]);
+                    if(storageDest.orderPicked[svc.testState.trialCount][i] === storageDest.orderShown[svc.testState.trialCount][i]) {
+                        vm.score++;
+                    }
+                } else if(svc.sessionParams.testType === 'colour') {
+                    console.log('colourPicked: ' + storageDest.colourPicked[svc.testState.trialCount][i]);
+                    console.log('colourShown: ' + storageDest.colourShown[svc.testState.trialCount][i]);
+                    if(storageDest.colourPicked[svc.testState.trialCount][i] === storageDest.colourShown[svc.testState.trialCount][i]) {
+                        vm.score++;
+                    }
+                }
+            }
+            storageDest.score[svc.testState.trialCount] = vm.score;
         }
     };
 
