@@ -30,8 +30,30 @@ mod.service('psychService', function() {
             4: 'V',
             5: 'X',
             6: 'Z'
-        }
+        },
+
+        draggableLetters: [],
+        droppableBoxes: [],
+        droppableColours: []
     };
+
+    // Initialize draggable and droppable objects
+    for(var i = 0; i < this.testConstants.maxDisplays; i++) {
+        var letterObj = {
+            letter: this.testConstants.letterMap[i],
+            value: i
+        };
+        this.testConstants.draggableLetters.push(letterObj);
+        var boxObj = {
+            index: i
+        };
+        this.testConstants.droppableBoxes.push(boxObj);
+        var colourObj = {
+            colour: this.testConstants.colourMap[i],
+            value: i
+        };
+        this.testConstants.droppableColours.push(colourObj);
+    }
 
     // User data begins here
 
@@ -253,7 +275,7 @@ mod.service('psychService', function() {
     this.testState = {
         iterationCount: -1, // -1 to include practice
         iterationType: 'practice', // practice
-        trialCount: 4, // 0
+        trialCount: 0, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
         displayCount: -1, // -1 to include exclamation
 
@@ -750,16 +772,20 @@ mod.controller('breakController', ['psychService', '$location', '$timeout', func
 
 }]);
 
-mod.controller('scoresheetController', ['psychService', function(psychService){
+mod.controller('scoresheetController', ['psychService', '$location', function(psychService, $location){
     var svc = psychService;
     var vm = this;
+
+    vm.draggableLetters = svc.testConstants.draggableLetters;
+    vm.droppableBoxes = svc.testConstants.droppableBoxes;
+    vm.droppableColours = svc.testConstants.droppableColours;
 
     // Called by DOM element button
     vm.scoreRedirect = function() {
         $location.path('/score');
     };
 
-    vm.colourMap = psychService.testConstants.colourMap;
+    vm.colourMap = svc.testConstants.colourMap;
 }]);
 
 mod.controller('exportController', ['psychService', function(psychService) {
