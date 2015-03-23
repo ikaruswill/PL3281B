@@ -253,7 +253,7 @@ mod.service('psychService', function() {
     this.testState = {
         iterationCount: -1, // -1 to include practice
         iterationType: 'practice', // practice
-        trialCount: 0, // 0
+        trialCount: 4, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
         displayCount: -1, // -1 to include exclamation
 
@@ -750,11 +750,16 @@ mod.controller('breakController', ['psychService', '$location', '$timeout', func
 
 }]);
 
-mod.controller('scoresheetController', [function(){
+mod.controller('scoresheetController', ['psychService', function(psychService){
+    var svc = psychService;
+    var vm = this;
+
     // Called by DOM element button
-    this.scoreRedirect = function() {
+    vm.scoreRedirect = function() {
         $location.path('/score');
     };
+
+    vm.colourMap = psychService.testConstants.colourMap;
 }]);
 
 mod.controller('exportController', ['psychService', function(psychService) {
