@@ -253,9 +253,9 @@ mod.service('psychService', function() {
     this.testState = {
         iterationCount: -1, // -1 to include practice
         iterationType: 'practice', // practice
-        trialCount: 0, // 0
+        trialCount: 4, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
-        displayCount: -1, // -1 to include exclamation
+        displayCount: 6, // -1 to include exclamation
 
         tested: false,
 
@@ -297,6 +297,7 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
 
     vm.quietPlaying = false;
 
+    vm.heteroPlaying = false;
     vm.heteroAudioSequence = [];
     var currentHeteroIndex = 0;
 
@@ -307,65 +308,81 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
     var homoTimer;
     var heteroTimer;
 
-    var audioMap = {
-        0: 'G.wav',
-        1: 'L.wav',
-        2: 'M.wav',
-        3: 'R.wav'
-    };
-
-    var audioPool = {
-        0: false,
-        1: false,
-        2: false,
-        3: false
+    var audioPathMap = {
+        0: 'audio/G.wav',
+        1: 'audio/L.wav',
+        2: 'audio/M.wav',
+        3: 'audio/R.wav'
     };
 
     vm.audioTypePool = {
-        0: false, // No sound (Quiet sound)
+        0: true, // No sound (Quiet sound)
         1: false, // 1 sound (Homo sound)
         2: false // 2 sounds (Hetero sound)
     };
 
 
-    this.initQuiet = function() {
+    // Generate random audio type
+    vm.getRandomAudioType = function() {
+        var randomAudioType;
+        /*do {
+            randomAudioType = Math.floor(Math.random() * 3);
+        } while (vm.audioTypePool[randomAudioType]);*/
+        randomAudioType = 2;
+        vm.audioTypePool = true;
+        vm.audioType = randomAudioType;
+        $window.alert("Audio Type Final: " + vm.audioType);
+    };
+
+    // Stop all audio
+    vm.stopAll = function() {
+        if(vm.quietPlaying) {
+            vm.stopQuiet();
+        } else if(vm.homoPlaying) {
+            vm.stopHomo();
+        } else if(vm.heteroPlaying) {
+            vm.stopHetero();
+        }
+    };
+
+    vm.initQuiet = function() {
         audioElement.src = 'audio/Quiet.wav';
     };
 
-    this.playQuiet = function() {
+    vm.playQuiet = function() {
         audioElement.play();
         vm.quietPlaying = true;
-        $window.alert("playQuiet!");
     };
 
-    this.stopQuiet = function() {
+    vm.stopQuiet = function() {
         audioElement.pause();
         vm.quietPlaying = false;
     };
 
-    this.initHomo = function() {
+    vm.initHomo = function() {
         var randomNumberHomo;
         // Generate random audio and remember past audio
         do {
-            randomNumberHomo = Math.floor(Math.random * 5);
+            randomNumberHomo = Math.floor(Math.random() * vm.audioFileCount);
         }while(randomNumberHomo === prevHomoAudio);
         prevHomoAudio = randomNumberHomo;
-        audioElement.src = audioMap[randomNumberHomo];
+        audioElement.src = audioPathMap[randomNumberHomo];
     };
 
-    this.playHomo = function() {
+    vm.playHomo = function() {
+        audioElement.loop = true;
         audioElement.play();
-        homoTimer = $timeout(playHomo, vm.audioDuration);
+        homoTimer = $timeout(vm.playHomo, 250);
         vm.homoPlaying = true;
     };
 
-    this.stopHomo = function() {
+    vm.stopHomo = function() {
         audioElement.pause();
         $timeout.cancel(homoTimer);
         vm.homoPlaying = false;
     };
 
-    this.initHetero = function() {
+    vm.initHetero = function() {
         var displayCount = svc.testConstants.maxDisplays;
         var audioCountPerDisplay = svc.testConstants.displayDuration / vm.audioDuration;
         var betweenCount = displayCount - 1;
@@ -376,32 +393,48 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
         var lastAudio = -1;
         var randomNumberHetero;
 
+        var audioPool = {
+            0: false,
+            1: false,
+            2: false,
+            3: false
+        };
+
         // For each set
         for(var i = 0; i < setCount; i++) {
             // For each audio file
-            for(var j = 0; j < vm.audioFileCount; j++) {
+            for(var j = 0; j < 4; j++) {
                 // Choose and remember random audio file
                 do{
-                    randomNumberHetero = Math.floor(Math.random * vm.audioFileCount);
-                }while(audioPool[randomNumberHetero] && randomNumberHetero !== lastAudio);
+                    randomNumberHetero = Math.floor(Math.random() * vm.audioFileCount);
+                }while(audioPool[randomNumberHetero]);
                 audioPool[randomNumberHetero] = true;
+                // Remember last random audio file
+                lastAudio = randomNumberHetero;
                 // Add to play sequence
                 vm.heteroAudioSequence.push(randomNumberHetero);
             }
-            // Remember last random audio file
-            lastAudio = randomNumberHetero;
+            // Refresh audioPool
+            for(var k = 0; k < 4; k++) {
+                audioPool[k] = false;
+            }
         }
     };
 
-    this.playHetero = function() {
-        audioElement.src = vm.heteroAudioSequence[currentHeteroIndex];
+
+
+    vm.playHetero = function() {
+        audioElement.src = audioPathMap[vm.heteroAudioSequence[currentHeteroIndex]];
         currentHeteroIndex++;
-        heteroTimer = $timeout(playHetero(), vm.audioDuration);
+        audioElement.play();
+        heteroTimer = $timeout(vm.playHetero, vm.audioDuration);
+        vm.heteroPlaying = true;
     };
 
-    this.stopHetero = function() {
+    vm.stopHetero = function() {
         audioElement.pause();
         $timeout.cancel(heteroTimer);
+        vm.heteroPlaying = false;
     };
 }]);
 
@@ -525,7 +558,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     };
 
     var scoresheetRedirect = function() {
-        asvc.stopQuiet();
+        asvc.stopAll();
         $location.path('/scoresheet');
     };
 
@@ -557,6 +590,9 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
             else {
                 svc.testState.iterationCount++;
                 svc.testState.trialCount = 0;
+
+                // Generate random audio type
+                asvc.getRandomAudioType();
 
                 // Check if recent iteration is practice
                 if(svc.testState.iterationType === 'practice') {
@@ -606,17 +642,28 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                 }
                 // Play quiet
             } else {
-                switch(svc.testConstants.audioType) {
+                switch (asvc.audioType) {
                     case 0:
+                        if (!asvc.quietPlaying) {
+                            asvc.initQuiet();
+                            asvc.playQuiet();
+                        }
                         break;
                     case 1:
-                        // Play homo
+                        if (!asvc.homoPlaying) {
+                            asvc.initHomo();
+                            asvc.playHomo();
+                        }
                         break;
                     case 2:
-                        // Play hetero
-                        break;
+                        if (!asvc.heteroPlaying) {
+                            asvc.initHetero();
+                            asvc.playHetero();
+                            break;
+                        }
                 }
             }
+
             if(!svc.testState.tested) {
                 // Set variables for next view
                 svc.testState.tested = true;
