@@ -1,5 +1,5 @@
 // Create module for the experiment
-var mod = angular.module('psych', ['ngRoute']);
+var mod = angular.module('psych', ['ngRoute', 'ngDraggable']);
 
 mod.service('psychService', function() {
 
@@ -468,10 +468,14 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'test.html'
-    }).when('/scoresheet', {
-        controller: 'practiceController',
-        controllerAs: 'pracCon',
-        templateUrl: 'scoresheet.html'
+    }).when('/scoresheet-colour', {
+        controller: 'scoresheetController',
+        controllerAs: 'scoresheetCon',
+        templateUrl: 'scoresheet-colour.html'
+    }).when('/scoresheet-order', {
+        controller: 'scoresheetController',
+        controllerAs: 'scoresheetCon',
+        templateUrl: 'scoresheet-order.html'
     }).when('/score', {
         controller: 'practiceController',
         controllerAs: 'pracCon',
@@ -558,12 +562,11 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
 
     var scoresheetRedirect = function() {
         asvc.stopAll();
-        $location.path('/scoresheet');
-    };
-
-    // Called by DOM element button
-    this.scoreRedirect = function() {
-        $location.path('/score');
+        if(svc.sessionParams.testType === 'colour') {
+            $location.path('/scoresheet-colour')
+        } else if(svc.sessionParams.testType === 'order'){
+            $location.path('/scoresheet-order')
+        }
     };
 
     // Reset test state
@@ -745,6 +748,13 @@ mod.controller('breakController', ['psychService', '$location', '$timeout', func
       $timeout.cancel(timer);
     };
 
+}]);
+
+mod.controller('scoresheetController', [function(){
+    // Called by DOM element button
+    this.scoreRedirect = function() {
+        $location.path('/score');
+    };
 }]);
 
 mod.controller('exportController', ['psychService', function(psychService) {
