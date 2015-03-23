@@ -288,16 +288,19 @@ mod.service('psychService', function() {
     };
 });
 
-mod.service('audioService', ['psychService', '$timeout', '$document', function(psychService, $timeout, $document) {
+mod.service('audioService', ['psychService', '$timeout', '$document', '$window', function(psychService, $timeout, $document, $window) {
     var svc = psychService;
     var vm = this;
     vm.audioDuration = 500; // 500 (ms)
     vm.audioFileCount = 4;
     var audioElement = $document[0].createElement('audio');
 
+    vm.quietPlaying = false;
+
     vm.heteroAudioSequence = [];
     var currentHeteroIndex = 0;
 
+    vm.homoPlaying = false;
     var prevHomoAudio = -1; // -1
     vm.audioType = 0; // 0
 
@@ -331,10 +334,13 @@ mod.service('audioService', ['psychService', '$timeout', '$document', function(p
 
     this.playQuiet = function() {
         audioElement.play();
+        vm.quietPlaying = true;
+        $window.alert("playQuiet!");
     };
 
     this.stopQuiet = function() {
-        audioElement.stop();
+        audioElement.pause();
+        vm.quietPlaying = false;
     };
 
     this.initHomo = function() {
@@ -350,11 +356,13 @@ mod.service('audioService', ['psychService', '$timeout', '$document', function(p
     this.playHomo = function() {
         audioElement.play();
         homoTimer = $timeout(playHomo, vm.audioDuration);
+        vm.homoPlaying = true;
     };
 
     this.stopHomo = function() {
-        audioElement.stop();
+        audioElement.pause();
         $timeout.cancel(homoTimer);
+        vm.homoPlaying = false;
     };
 
     this.initHetero = function() {
@@ -392,7 +400,7 @@ mod.service('audioService', ['psychService', '$timeout', '$document', function(p
     };
 
     this.stopHetero = function() {
-        audioElement.stop();
+        audioElement.pause();
         $timeout.cancel(heteroTimer);
     };
 }]);
@@ -501,6 +509,7 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
 mod.controller('practiceController', ['psychService', 'audioService', '$location', '$timeout', '$window', '$scope', '$document', function(psychService, audioService, $location, $timeout, $window, $scope, $document) {
     var vm = this;
     var svc = psychService;
+    var asvc = audioService;
 
     // View variables
     vm.currentColour = '';
@@ -516,6 +525,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     };
 
     var scoresheetRedirect = function() {
+        asvc.stopQuiet();
         $location.path('/scoresheet');
     };
 
@@ -588,24 +598,26 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         }
         // Prevent scoresheet from entering logic block
         else if(svc.testState.displayCount < 7) {
-            if(!svc.testState.tested) {
-                // Play audio based on audio type
-                if(svc.testState.iterationType === 'practice') {
-                    // Play quiet
-                } else {
-                    switch(svc.testConstants.audioType) {
-                        case 0:
-                            // Play quiet
-                            break;
-                        case 1:
-                            // Play homo
-                            break;
-                        case 2:
-                            // Play hetero
-                            break;
-                    }
+            // Play audio based on audio type
+            if(svc.testState.iterationType === 'practice') {
+                if(!asvc.quietPlaying) {
+                    asvc.initQuiet();
+                    asvc.playQuiet();
                 }
-
+                // Play quiet
+            } else {
+                switch(svc.testConstants.audioType) {
+                    case 0:
+                        break;
+                    case 1:
+                        // Play homo
+                        break;
+                    case 2:
+                        // Play hetero
+                        break;
+                }
+            }
+            if(!svc.testState.tested) {
                 // Set variables for next view
                 svc.testState.tested = true;
                 svc.testState.displayCount++;
