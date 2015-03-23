@@ -1,0 +1,49 @@
+<style>
+    .draggable {
+        width: 84pt;
+        height: 75pt;
+        float: left;
+        border: solid #000000;
+        font-size: 50pt;
+        font-family: Helvetica;
+        text-align: center;
+        line-height: 75pt;
+        margin: 0 auto;
+    }
+    .droppable {
+        width: 101pt;
+        height: 90pt;
+        float: left;
+        border: solid #000000;
+    }
+    .dropped {
+        width: 101pt;
+        height: 90pt;
+        font-size: 50pt;
+        font-family: Helvetica;
+        text-align: center;
+        line-height: 90pt;
+    }
+    .buttons {
+        display: block;
+        margin: 5pt auto;
+    }
+
+</style>
+
+
+<h1 style="text-align: center">SCORE SHEET</h1>
+<div style="width:355pt; height:230pt; margin:auto">
+    <div class="draggable" ng-repeat="draggableObj in scoresheetCon.draggable" ng-drag="true" ng-drag-data="draggableObj" data-allow-transform="true">{{draggableObj.letter}}</div>
+</div>
+
+<div style="width:720pt; margin:auto">
+    <div class="droppable" ng-repeat="droppableObj in scoresheetCon.droppable" style="background-color: {{droppableObj.colour}}" ng-drop="true" ng-drop-success="scoresheetCon.onDropComplete(droppableObj, $data, $event)">
+        <div class="dropped" style="background-color: {{droppedObj.colour}}" ng-drag="true" ng-drag-data="scoresheetCon.dropped[droppableObj.value]">{{scoresheetCon.dropped[droppableObj.value].letter}}</div>
+    </div>
+    <div style="width: 101pt; float: left" ng-repeat="button in scoresheetCon.buttons"><button class="buttons" ng-click="scoresheetCon.onClear(button)">Clear</button></div>
+</div>
+
+<div style="width: 720pt; margin: 0 auto">
+    <button style="margin: 20pt auto" ng-click="scoresheetCon.submitScore()">Submit</button>
+</div>

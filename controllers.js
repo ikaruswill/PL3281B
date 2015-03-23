@@ -12,10 +12,20 @@ mod.service('psychService', function() {
         breakDuration: 5, // 60 (s)
 
 
-        colourMap: {
+        colourValueMap: {
             0: '#ffff00', // Yellow
             1: '#e46c0a', // Brown
             2: '#ff0000', // Red
+            3: '#604a7b', // Purple
+            4: '#558ed5', // Blue
+            5: '#00b050', // Green
+            6: '#bfbfbf' // Grey
+        },
+
+        colourMap: {
+            0: 'Yellow',
+            1: 'Brown',
+            2: 'Red',
             3: '#604a7b', // Purple
             4: '#558ed5', // Blue
             5: '#00b050', // Green
@@ -30,30 +40,8 @@ mod.service('psychService', function() {
             4: 'V',
             5: 'X',
             6: 'Z'
-        },
-
-        draggableLetters: [],
-        droppableBoxes: [],
-        droppableColours: []
+        }
     };
-
-    // Initialize draggable and droppable objects
-    for(var i = 0; i < this.testConstants.maxDisplays; i++) {
-        var letterObj = {
-            letter: this.testConstants.letterMap[i],
-            value: i
-        };
-        this.testConstants.draggableLetters.push(letterObj);
-        var boxObj = {
-            index: i
-        };
-        this.testConstants.droppableBoxes.push(boxObj);
-        var colourObj = {
-            colour: this.testConstants.colourMap[i],
-            value: i
-        };
-        this.testConstants.droppableColours.push(colourObj);
-    }
 
     // User data begins here
 
@@ -64,51 +52,344 @@ mod.service('psychService', function() {
 
     this.practiceData = {
         colourShown: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: []
+            0: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            1: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            2: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            3: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            4: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            }
         },
         colourPicked: {
+            0: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            1: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            2: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            3: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            },
+            4: {
+                B: -1,
+                H: -1,
+                J: -1,
+                Q: -1,
+                V: -1,
+                X: -1,
+                Z: -1
+            }
+        },
+        orderShown: {
             0: [],
             1: [],
             2: [],
             3: [],
             4: []
         },
-        letterShown: {
+        orderPicked: {
             0: [],
             1: [],
             2: [],
             3: [],
             4: []
         },
-        letterPicked: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: []
+        score: {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0
         }
     };
 
     this.test1Data = {
         colourShown: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-            7: [],
-            8: [],
-            9: [],
-            10:[],
-            11:[]
+            0: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            1: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            2: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            3: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            4: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            5: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            6: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            7: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            8: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            9: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            10: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            11: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            }
         },
         colourPicked: {
+            0: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            1: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            2: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            3: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            4: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            5: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            6: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            7: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            8: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            9: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            10: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            11: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            }
+        },
+        orderShown: {
             0: [],
             1: [],
             2: [],
@@ -122,7 +403,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterShown: {
+        orderPicked: {
             0: [],
             1: [],
             2: [],
@@ -136,38 +417,244 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterPicked: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-            7: [],
-            8: [],
-            9: [],
-            10:[],
-            11:[]
+        score: {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0
         }
     };
 
     this.test2Data = {
         colourShown: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-            7: [],
-            8: [],
-            9: [],
-            10:[],
-            11:[]
+            0: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            1: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            2: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            3: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            4: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            5: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            6: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            7: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            8: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            9: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            10: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            11: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            }
         },
         colourPicked: {
+            0: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            1: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            2: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            3: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            4: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            5: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            6: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            7: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            8: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            9: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            10: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            11: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            }
+        },
+        orderShown: {
             0: [],
             1: [],
             2: [],
@@ -181,7 +668,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterShown: {
+        orderPicked: {
             0: [],
             1: [],
             2: [],
@@ -195,38 +682,244 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterPicked: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-            7: [],
-            8: [],
-            9: [],
-            10:[],
-            11:[]
+        score: {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0
         }
     };
 
     this.test3Data = {
         colourShown: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-            7: [],
-            8: [],
-            9: [],
-            10:[],
-            11:[]
+            0: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            1: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            2: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            3: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            4: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            5: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            6: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            7: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            8: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            9: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            10: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            11: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            }
         },
         colourPicked: {
+            0: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            1: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            2: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            3: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            4: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            5: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            6: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            7: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            8: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            9: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            10: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            },
+            11: {
+                B: 0,
+                H: 0,
+                J: 0,
+                Q: 0,
+                V: 0,
+                X: 0,
+                Z: 0
+            }
+        },
+        orderShown: {
             0: [],
             1: [],
             2: [],
@@ -240,7 +933,7 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterShown: {
+        orderPicked: {
             0: [],
             1: [],
             2: [],
@@ -254,19 +947,19 @@ mod.service('psychService', function() {
             10:[],
             11:[]
         },
-        letterPicked: {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-            7: [],
-            8: [],
-            9: [],
-            10:[],
-            11:[]
+        score: {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0
         }
     };
 
@@ -277,7 +970,7 @@ mod.service('psychService', function() {
         iterationType: 'practice', // practice
         trialCount: 0, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
-        displayCount: -1, // -1 to include exclamation
+        displayCount: 6, // -1 to include exclamation
 
         tested: false,
 
@@ -490,14 +1183,10 @@ function routeConfig($routeProvider) {
         controller: 'practiceController',
         controllerAs: 'pracCon',
         templateUrl: 'test.html'
-    }).when('/scoresheet-colour', {
+    }).when('/scoresheet', {
         controller: 'scoresheetController',
         controllerAs: 'scoresheetCon',
-        templateUrl: 'scoresheet-colour.html'
-    }).when('/scoresheet-order', {
-        controller: 'scoresheetController',
-        controllerAs: 'scoresheetCon',
-        templateUrl: 'scoresheet-order.html'
+        templateUrl: 'scoresheet.html'
     }).when('/score', {
         controller: 'practiceController',
         controllerAs: 'pracCon',
@@ -584,11 +1273,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
 
     var scoresheetRedirect = function() {
         asvc.stopAll();
-        if(svc.sessionParams.testType === 'colour') {
-            $location.path('/scoresheet-colour')
-        } else if(svc.sessionParams.testType === 'order'){
-            $location.path('/scoresheet-order')
-        }
+        $location.path('/scoresheet');
     };
 
     // Reset test state
@@ -645,18 +1330,19 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
 
     var runLogic = function() {
-        // Decommission logic timer
+        // Decommission logic timer on unload
         $scope.$on('$destroy', function() {
             $timeout.cancel(logicTimer);
         });
 
-        // Display exclamation mark
+        // Display exclamation mark for /pause
         if(svc.testState.displayCount === -1) {
             vm.currentLetter = '!';
             svc.testState.displayCount++;
             timer = $timeout(testRedirect, 1000);
         }
-        // Prevent scoresheet from entering logic block
+
+        // Prevent score from entering logic block
         else if(svc.testState.displayCount < 7) {
             // Play audio based on audio type
             if(svc.testState.iterationType === 'practice') {
@@ -704,11 +1390,12 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
 
                 // Update view
                 vm.currentLetter = svc.testConstants.letterMap[randomLetter];
+                vm.currentColourValue = svc.testConstants.colourValueMap[randomColour];
                 vm.currentColour = svc.testConstants.colourMap[randomColour];
 
                 // Update test answers
-                storageDest.letterShown[svc.testState.trialCount].push(vm.currentLetter);
-                storageDest.colourShown[svc.testState.trialCount].push(vm.currentColour);
+                storageDest.orderShown[svc.testState.trialCount].push(vm.currentLetter);
+                storageDest.colourShown[svc.testState.trialCount][vm.currentLetter] = vm.currentColour;
 
                 // Update available sets
                 svc.testState.colourPool[randomColour] = true;
@@ -723,7 +1410,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                     svc.testState.trialCount++;
                     timer = $timeout(scoresheetRedirect, 1000);
                 }
-            } else {
+            } else if(svc.testState.tested) {
                 vm.currentLetter = '+';
                 svc.testState.tested = false;
                 timer = $timeout(testRedirect, 500);
@@ -732,6 +1419,10 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
             $scope.$on('$destroy', function() {
                 $timeout.cancel(timer);
             });
+        }
+        // Score computation for /score
+        else {
+            storageDest
         }
     };
 
@@ -775,17 +1466,71 @@ mod.controller('breakController', ['psychService', '$location', '$timeout', func
 mod.controller('scoresheetController', ['psychService', '$location', function(psychService, $location){
     var svc = psychService;
     var vm = this;
+    var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
 
-    vm.draggableLetters = svc.testConstants.draggableLetters;
-    vm.droppableBoxes = svc.testConstants.droppableBoxes;
-    vm.droppableColours = svc.testConstants.droppableColours;
+    vm.draggable = [];
+    vm.droppableBoxes = [];
+    vm.droppableColours = [];
+    vm.dropped = [];
+    vm.buttons = [];
+
+    // Initialize draggable, droppable, dropped and button objects
+    for(var i = 0; i < svc.testConstants.maxDisplays; i++) {
+        var letterObj = {
+            letter: svc.testConstants.letterMap[i],
+            value: i // Letter map index
+        };
+        vm.draggable.push(letterObj);
+        var boxObj = {
+            colour: 'transparent',
+            value: i // Order
+        };
+        vm.droppableBoxes.push(boxObj);
+        var colourObj = {
+            colour: svc.testConstants.colourMap[i],
+            value: i // Colour map index
+        };
+        vm.droppableColours.push(colourObj);
+        vm.dropped.push(null);
+        vm.buttons.push(i);
+    }
+
+    if(svc.sessionParams.testType === 'order') {
+        vm.droppable = vm.droppableBoxes;
+    } else if(svc.sessionParams.testType === 'colour') {
+        vm.droppable = vm.droppableColours;
+    }
+
 
     // Called by DOM element button
+    vm.submitScore = function() {
+        for(var j = 0; j < svc.testConstants.maxDisplays; j++) {
+            storageDest.orderPicked[svc.testState.trialCount][j] = vm.dropped[j].letter;
+            storageDest.colourPicked[svc.testState.trialCount][vm.dropped[j].letter] = svc.testConstants.colourMap[vm.dropped[j].index];
+        }
+        vm.scoreRedirect();
+    };
+
     vm.scoreRedirect = function() {
         $location.path('/score');
     };
 
-    vm.colourMap = svc.testConstants.colourMap;
+    vm.onDropComplete = function(box, data, event) {
+        if (vm.dropped.indexOf(data) == -1) {
+            vm.dropped[box.value] = data;
+        }
+    };
+
+    vm.onDragSuccess1 = function(data,event){
+        var index = vm.dropped.indexOf(data);
+        if (index > -1) {
+            vm.dropped.splice(index, 1);
+        }
+    };
+
+    vm.onClear = function(index) {
+        vm.dropped[index] = null;
+    }
 }]);
 
 mod.controller('exportController', ['psychService', function(psychService) {
