@@ -968,7 +968,7 @@ mod.service('psychService', function() {
     this.testState = {
         iterationCount: -1, // -1 to include practice
         iterationType: 'practice', // practice
-        trialCount: 0, // 0
+        trialCount: 3, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
         displayCount: -1, // -1 to include exclamation
 
@@ -1289,11 +1289,12 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
 
     this.pauseRedirect = function() {
         this.resetTestState();
-
+        console.log('TrialCount @ pauseRedirect: ' + svc.testState.trialCount);
+        svc.testState.trialCount++;
        // if($scope.keyCode == 32) {
             // End of trial
             if(svc.testState.trialCount < svc.testState.maxTrials) {
-                svc.testState.trialCount++;
+
                 $location.path('/pause');
             }
             // End of iteration (First run: after practice)
