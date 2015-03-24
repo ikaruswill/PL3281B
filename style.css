@@ -1,0 +1,61 @@
+.all{
+    text-align: center;
+}
+.inner {
+    width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+.test {
+    width:335pt;
+    height:300pt;
+    margin: 0 auto;
+    font-family:Helvetica;
+    font-size:200pt;
+    text-align: center;
+    line-height: 300pt;
+}
+.testWrapper {
+    margin-top: 150pt;
+}
+.draggableWrapper {
+    width:355pt;
+    height:230pt;
+    margin:auto;
+}
+.droppableWrapper {
+    width:720pt;
+    margin:auto;
+}
+.draggable {
+    width: 84pt;
+    height: 75pt;
+    float: left;
+    border: solid #000000;
+    font-size: 50pt;
+    font-family: Helvetica;
+    text-align: center;
+    line-height: 75pt;
+    margin: 0 auto;
+}
+.droppable {
+    width: 101pt;
+    height: 90pt;
+    float: left;
+    border: solid #000000;
+}
+.dropped {
+    width: 101pt;
+    height: 90pt;
+    font-size: 50pt;
+    font-family: Helvetica;
+    text-align: center;
+    line-height: 90pt;
+}
+.buttons {
+    display: block;
+    margin: 5pt auto;
+}
+.clearButtonWrapper {
+    width: 101pt; float: left
+}
