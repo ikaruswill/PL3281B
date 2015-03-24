@@ -1,5 +1,6 @@
 .all{
     text-align: center;
+    margin: 200px auto;
 }
 .inner {
     width: 800px;
@@ -16,7 +17,7 @@
     line-height: 300pt;
 }
 .testWrapper {
-    margin-top: 150pt;
+    margin-top: 200px;
 }
 .draggableWrapper {
     width:355pt;
@@ -43,6 +44,19 @@
     height: 90pt;
     float: left;
     border: solid #000000;
+}
+.droppableIndicator {
+    width: 101pt;
+    height: 90pt;
+    float: left;
+    border: hidden #000000;
+}
+.droppableNumbers {
+    font-size: 50pt;
+    font-family: Helvetica;
+    text-align: center;
+    line-height: 75pt;
+    margin: 0 auto;
 }
 .dropped {
     width: 101pt;

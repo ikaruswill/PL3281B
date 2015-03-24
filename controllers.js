@@ -1258,10 +1258,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var svc = psychService;
     var asvc = audioService;
 
-    // View variables
-    vm.currentColour = '';
-    vm.currentLetter = '';
-
     // Redirects
     var testRedirect = function() {
         $location.path('/test');
@@ -1294,7 +1290,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
        // if($scope.keyCode == 32) {
             // End of trial
             if(svc.testState.trialCount < svc.testState.maxTrials) {
-
                 $location.path('/pause');
             }
             // End of iteration (First run: after practice)
@@ -1465,27 +1460,9 @@ mod.controller('endPracticeController',['$location', function($location) {
 
 mod.controller('breakController', ['psychService', '$location', '$timeout', function(psychService, $location, $timeout) {
     var vm = this;
-    var svc = psychService;
-    vm.counter = svc.testConstants.breakDuration;
 
     vm.pauseRedirect = function() {
-        vm.stop();
         $location.path('/pause');
-    };
-
-    var decrementCounter = function() {
-        vm.counter--;
-        if(vm.counter !== 0) {
-            timer = $timeout(decrementCounter, 1000)
-        } else {
-            vm.pauseRedirect();
-        }
-    };
-
-    var timer = $timeout(decrementCounter, 1000);
-
-    vm.stop = function() {
-      $timeout.cancel(timer);
     };
 
 }]);
@@ -1514,7 +1491,7 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
         };
         vm.droppableBoxes.push(boxObj);
         var colourObj = {
-            colour: svc.testConstants.colourMap[i],
+            colour: svc.testConstants.colourValueMap[i],
             value: i // Colour map index
         };
         vm.droppableColours.push(colourObj);
@@ -1523,8 +1500,10 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
     }
 
     if(svc.sessionParams.testType === 'order') {
+        vm.isOrder = true;
         vm.droppable = vm.droppableBoxes;
     } else if(svc.sessionParams.testType === 'colour') {
+        vm.isOrder = false;
         vm.droppable = vm.droppableColours;
     }
 

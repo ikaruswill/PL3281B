@@ -4,8 +4,11 @@
 </div>
 
 <div class="droppableWrapper">
-    <div class="droppable" ng-repeat="droppableObj in scoresheetCon.droppable" style="background-color: {{droppableObj.colour}}" ng-drop="true" ng-drop-success="scoresheetCon.onDropComplete(droppableObj, $data, $event)">
+    <div class="droppable" ng-repeat="droppableObj in scoresheetCon.droppable" ng-drop="true" ng-drop-success="scoresheetCon.onDropComplete(droppableObj, $data, $event)">
         <div class="dropped" style="background-color: {{droppedObj.colour}}" ng-drag="true" ng-drag-data="scoresheetCon.dropped[droppableObj.value]">{{scoresheetCon.dropped[droppableObj.value].letter}}</div>
+    </div>
+    <div class="droppableIndicator" ng-repeat="droppableObj in scoresheetCon.droppable" style="background-color: {{droppableObj.colour}}">
+        <p class="droppableNumbers" ng-show="scoresheetCon.isOrder">{{droppableObj.value}}</p>
     </div>
     <div class="clearButtonWrapper" ng-repeat="button in scoresheetCon.buttons"><button class="buttons" ng-click="scoresheetCon.onClear(button)">Clear</button></div>
 </div>
