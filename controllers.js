@@ -1,12 +1,13 @@
 // Create module for the experiment
-var mod = angular.module('psych', ['ngRoute', 'ngDraggable']);
+var mod = angular.module('psych', ['ngRoute', 'ngDraggable', 'ngCsv']);
 
 mod.service('psychService', function() {
 
     this.testConstants = {
-        practiceMaxTrials: 5,
-        standardMaxTrials: 12,
-        maxDisplays: 7,
+        maxIterations: 4,
+        practiceMaxTrials: 1,
+        standardMaxTrials: 1,
+        maxDisplays: 2,
         displayDuration: 1000, //1000 (ms)
         betweenDuration: 500, // 500 (ms)
         breakDuration: 60, // 60 (s)
@@ -51,6 +52,7 @@ mod.service('psychService', function() {
     };
 
     this.practiceData = {
+        distractor: 0, // Always quiet audio
         colourShown: {
             0: {
                 B: 0,
@@ -169,6 +171,7 @@ mod.service('psychService', function() {
     };
 
     this.test1Data = {
+        distractor: -1,
         colourShown: {
             0: {
                 B: 0,
@@ -434,6 +437,7 @@ mod.service('psychService', function() {
     };
 
     this.test2Data = {
+        distractor: -1,
         colourShown: {
             0: {
                 B: 0,
@@ -699,6 +703,7 @@ mod.service('psychService', function() {
     };
 
     this.test3Data = {
+        distractor: -1,
         colourShown: {
             0: {
                 B: 0,
@@ -974,13 +979,6 @@ mod.service('psychService', function() {
 
         tested: false,
 
-        storeDest: {
-            0: this.practiceData,
-            1: this.test1Data,
-            2: this.test2Data,
-            3: this.test3Data
-        },
-
         colourPool: {
             0: false,
             1: false,
@@ -1000,6 +998,13 @@ mod.service('psychService', function() {
             5: false,
             6: false
         }
+    };
+
+    this.storeDest = {
+        0: this.practiceData,
+        1: this.test1Data,
+        2: this.test2Data,
+        3: this.test3Data
     };
 });
 
@@ -1258,6 +1263,8 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var svc = psychService;
     var asvc = audioService;
 
+    var storageDest = svc.storeDest[svc.testState.iterationCount + 1];
+
     // Redirects
     var testRedirect = function() {
         $location.path('/test');
@@ -1299,6 +1306,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
 
                 // Generate random audio type
                 asvc.getRandomAudioType();
+                storageDest.distractor = asvc.audioType;
 
                 // Check if recent iteration is practice
                 if(svc.testState.iterationType === 'practice') {
@@ -1324,7 +1332,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var randomColour;
     var randomLetter;
     var timer;
-    var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
     vm.score = 0;
     vm.maxScore = svc.testConstants.maxDisplays;
     vm.percentageScore;
@@ -1343,7 +1350,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         }
 
         // Prevent score from entering logic block
-        else if(svc.testState.displayCount < 7) {
+        else if(svc.testState.displayCount < svc.testConstants.maxDisplays) {
             // Play audio based on audio type
             if(svc.testState.iterationType === 'practice') {
                 if(!asvc.quietPlaying) {
@@ -1378,10 +1385,10 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                 // Generate random numbers for colour and letter
                 // While number has occurred in testState keep generating
                 do {
-                    randomLetter = Math.floor(Math.random() * 7);
+                    randomLetter = Math.floor(Math.random() * svc.testConstants.maxDisplays);
                 } while(svc.testState.letterPool[randomLetter]);
                 do {
-                    randomColour = Math.floor(Math.random() * 7);
+                    randomColour = Math.floor(Math.random() * svc.testConstants.maxDisplays);
                 } while(svc.testState.colourPool[randomColour]);
 
                 // Update view
@@ -1404,7 +1411,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                 svc.testState.displayCount++;
 
                 // Check if it is the last display
-                if(svc.testState.displayCount != 7) {
+                if(svc.testState.displayCount != svc.testConstants.maxDisplays) {
                     timer = $timeout(betweenRedirect, 1000);
                 }
                 // Redirect to score sheet
@@ -1470,7 +1477,7 @@ mod.controller('breakController', ['psychService', '$location', '$timeout', func
 mod.controller('scoresheetController', ['psychService', '$location', function(psychService, $location){
     var svc = psychService;
     var vm = this;
-    var storageDest = svc.testState.storeDest[svc.testState.iterationCount + 1];
+    var storageDest = svc.storeDest[svc.testState.iterationCount + 1];
 
     vm.draggable = [];
     vm.droppableBoxes = [];
@@ -1541,5 +1548,54 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
 }]);
 
 mod.controller('exportController', ['psychService', function(psychService) {
+    var svc = psychService;
+    var vm = this;
+    vm.csvData = [];
+    vm.csvHeader = ["Block", "Distractor", "Trial"];
+    vm.filename = "PL3281B result.csv";
+    vm.fieldSeparator = ",";
+    vm.decimalSeparator = ".";
+
+    var initCsvHeader = function() {
+        for(var l = 1; l <= svc.testConstants.maxTrials + 1; l++) {
+            var letter = "letter";
+            vm.csvHeader.push(letter + " " +  l);
+        }
+        for(var c = 0; c < svc.testConstants.maxTrials; c++) {
+            vm.csvHeader.push(svc.testConstants.letterMap[c] + " colour");
+        }
+    };
+
+    initCsvHeader();
+
+    var pushArray = function (recipient, sender) {
+        for (var i = 0; i < sender.length; i++) {
+            recipient.push(sender[i]);
+        }
+    };
+
+    for (var i = 0; i < svc.testConstants.maxIterations; i++) {
+        var storageDest = svc.storeDest[i];
+
+        for (var t = 0; t < svc.testConstants.practiceMaxTrials; t++) {
+            var shown = [];
+            var actual = [];
+
+            shown.push(i - 1);
+            shown.push(storageDest.distractor);
+            shown.push(t);
+            pushArray(shown, storageDest.orderShown);
+            pushArray(shown, storageDest.colourShown);
+
+            actual.push(i - 1);
+            actual.push(0);
+            actual.push(t);
+            pushArray(shown, storageDest.orderPicked);
+            pushArray(shown, storageDest.colourPicked);
+
+            vm.csvData.push(shown);
+            vm.csvData.push(actual);
+        }
+    }
 
 }]);
