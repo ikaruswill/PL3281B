@@ -1017,7 +1017,7 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
     var audioElement = $document[0].createElement('audio');
 
     // Practice always plays quiet sound
-    vm.audioTypeSequence = [0];
+    var audioTypeSequence = [0];
 
     var quietPlaying = false;
 
@@ -1052,8 +1052,12 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
                 randomNumber = Math.floor(Math.random() * vm.audioTypeCount);
             } while (audioTypeUsed[randomNumber]);
             audioTypeUsed[randomNumber] = true;
-            vm.audioTypeSequence.push(randomNumber);
+            audioTypeSequence.push(randomNumber);
             console.log("audioTypeSequence: pushed " + randomNumber);
+        }
+
+        for(var j = 0; j < audioTypeSequence.length; j++) {
+            svc.storeDest[j].distractor = audioTypeSequence[j];
         }
 
         console.log("audioTypeSequence init");
@@ -1157,7 +1161,7 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
 
     // Play audio according to predetermined type sequence
     vm.playAudio = function() {
-        var type = vm.audioTypeSequence[svc.testState.iterationCount + 1];
+        var type = audioTypeSequence[svc.testState.iterationCount + 1];
 
         switch (type) {
             case 0:
@@ -1298,7 +1302,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var vm = this;
     var svc = psychService;
     var asvc = audioService;
-    var storageDest = -1;
 
     // Redirects
     var testRedirect = function() {
@@ -1335,15 +1338,9 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                 $location.path('/pause');
             }
             // End of iteration (First run: after practice)
-            else {
+            else if(svc.testState.trialCount === svc.testState.maxTrials) {
                 svc.testState.iterationCount++;
                 svc.testState.trialCount = 0;
-
-                // Generate next random audio type
-                storageDest = svc.storeDest[svc.testState.iterationCount + 1];
-                storageDest.distractor = asvc.audioTypeSequence[svc.testState.iterationCount + 1];
-                console.log("audioType: " + asvc.audioTypeSequence[svc.testState.iterationCount + 1]);
-                console.log("Distractor: " + storageDest.distractor);
 
                 // Check if recent iteration is practice
                 if(svc.testState.iterationType === 'practice') {
@@ -1356,7 +1353,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                     $location.path('/endpractice');
                 } else {
                     if(svc.testState.iterationCount < 3) {
-
                         // Redirect to rest page
                         $location.path('/break');
                     } else {
@@ -1370,10 +1366,10 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     var randomColour;
     var randomLetter;
     var timer;
-    storageDest = svc.storeDest[svc.testState.iterationCount + 1];
     vm.score = 0;
     vm.maxScore = svc.testConstants.maxDisplays;
-    vm.percentageScore;
+    var storageDest = svc.storeDest[svc.testState.iterationCount + 1];
+    console.log(svc.testState.iterationCount + 1);
 
     var runLogic = function() {
         // Decommission logic timer on unload
@@ -1385,6 +1381,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         if(svc.testState.displayCount === -1) {
             vm.currentLetter = '!';
             svc.testState.displayCount++;
+            storageDest = svc.storeDest[svc.testState.iterationCount + 1];
             timer = $timeout(testRedirect, 1000);
         }
 
