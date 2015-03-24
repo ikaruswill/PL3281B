@@ -1124,9 +1124,9 @@ mod.service('audioService', ['psychService', '$timeout', '$document', '$window',
                 // Choose and remember random audio file
                 do{
                     randomNumberHetero = Math.floor(Math.random() * vm.audioFileCount);
-                }while(numberUsed[randomNumberHetero] && randomNumberHetero !== lastAudio);
+                }while(numberUsed[randomNumberHetero] || (randomNumberHetero === lastAudio));
                 numberUsed[randomNumberHetero] = true;
-
+                console.log("H init iteration: " + i + " Audio: " + randomNumberHetero);
                 // Remember last random audio file
                 lastAudio = randomNumberHetero;
 
