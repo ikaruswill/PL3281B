@@ -5,7 +5,7 @@
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js"></script>
-    <script src="../build/ng-csv.js"></script>
+    <script src="resources/ng-csv.js"></script>
 </head>
 <body>
 
@@ -62,7 +62,7 @@
             $scope.getArray.push({a: Math.floor((Math.random()*10)+1), b: Math.floor((Math.random()*10)+1)});
         };
 
-        $scope.getHeader = function () {return ["A", "B"]};
+        $scope.getHeader = function () {return ["A", "B", "C"]};
 
         $scope.clickFn = function() {
             console.log("click click click");
