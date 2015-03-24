@@ -9,7 +9,7 @@ mod.service('psychService', function() {
         maxDisplays: 7,
         displayDuration: 1000, //1000 (ms)
         betweenDuration: 500, // 500 (ms)
-        breakDuration: 5, // 60 (s)
+        breakDuration: 60, // 60 (s)
 
 
         colourValueMap: {
@@ -968,7 +968,7 @@ mod.service('psychService', function() {
     this.testState = {
         iterationCount: -1, // -1 to include practice
         iterationType: 'practice', // practice
-        trialCount: 3, // 0
+        trialCount: 0, // 0
         maxTrials: this.testConstants.practiceMaxTrials,
         displayCount: -1, // -1 to include exclamation
 
