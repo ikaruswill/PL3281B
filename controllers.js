@@ -904,7 +904,7 @@ mod.controller('exportController', ['psychService', function(psychService) {
     var vm = this;
     vm.csvData = [];
     vm.csvHeader = [svc.sessionParams.testType, "Block", "Distractor", "Trial"];
-    vm.filename = "PL3281B result.csv";
+    vm.filename = svc.sessionParams.sessionNo;
     vm.fieldSeparator = ",";
     vm.decimalSeparator = ".";
 
