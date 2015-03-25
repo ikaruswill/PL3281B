@@ -4,10 +4,10 @@ var mod = angular.module('psych', ['ngRoute', 'ngDraggable', 'ngCsv', 'ngSanitiz
 mod.service('psychService', function() {
 
     this.testConstants = {
-        maxIterations: 4,
-        practiceMaxTrials: 1,
-        standardMaxTrials: 1,
-        maxDisplays: 2,
+        maxIterations: 4, // 4
+        practiceMaxTrials: 5, // 5
+        standardMaxTrials: 12, // 12
+        maxDisplays: 7, // 7
         displayDuration: 1000, //1000 (ms)
         betweenDuration: 500, // 500 (ms)
         breakDuration: 60, // 60 (s)
