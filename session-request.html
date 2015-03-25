@@ -2,8 +2,10 @@
 <p></p>
 <h5>Please enter your session number</h5>
 <form class="form-inline" ng-submit="initCon.parseSessionNoInput()">
-    <div class="form-group">
+    <div class="input-group">
         <input type="text" class="form-control" ng-model="initCon.sessionNoInput" placeholder="Your session number" required>
+        <span class="input-group-btn">
+            <button class="btn btn-default">Submit</button>
+        </span>
     </div>
-    <button class="btn btn-default">Submit</button>
 </form>

@@ -3,15 +3,15 @@
     <div class="draggable" ng-repeat="draggableObj in scoresheetCon.draggable" ng-drag="true" ng-drag-data="draggableObj" data-allow-transform="true">{{draggableObj.letter}}</div>
 </div>
 
-<div class="droppableWrapper">
+<div class="droppableWrapper noselect">
     <div class="droppable" ng-repeat="droppableObj in scoresheetCon.droppable" ng-drop="true" ng-drop-success="scoresheetCon.onDropComplete(droppableObj, $data, $event)">
         <div class="dropped" style="background-color: {{droppedObj.colour}}" ng-drag="true" ng-drag-data="scoresheetCon.dropped[droppableObj.value]">{{scoresheetCon.dropped[droppableObj.value].letter}}</div>
     </div>
     <div class="droppableIndicator" ng-repeat="droppableObj in scoresheetCon.droppable" style="background-color: {{droppableObj.colour}}">
         <p class="droppableNumbers" ng-show="scoresheetCon.isOrder">{{droppableObj.value + 1}}</p>
     </div>
-    <div class="clearButtonWrapper" ng-repeat="button in scoresheetCon.buttons"><button class="buttons" ng-click="scoresheetCon.onClear(button)">Clear</button></div>
+    <div class="clearButtonWrapper" ng-repeat="button in scoresheetCon.buttons"><button class="btn btn-default" ng-click="scoresheetCon.onClear(button)">Clear</button></div>
 </div>
-<div id="submitButtonWeapper">
-<button ng-click="scoresheetCon.submitScore()">Submit</button>
+<div id="submitButtonWrapper">
+<button class="btn btn-default" ng-click="scoresheetCon.submitScore()">Submit</button>
 </div>

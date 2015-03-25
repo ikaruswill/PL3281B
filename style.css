@@ -73,10 +73,19 @@
 }
 .clearButtonWrapper {
     text-align: center;
-    width: 101pt; float: left
+    width: 101pt;
+    float: left;
+    margin: 10px auto;
 }
 #submitButtonWrapper {
     text-align: center;
-    float: none;
     clear: left;
+}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
