@@ -1,11 +1,12 @@
 .all{
     text-align: center;
-    margin: 200px auto;
+    margin: 150px auto;
 }
-.inner {
+.instructions {
     width: 800px;
     margin: 0 auto;
     text-align: left;
+    font-size: larger;
 }
 .test {
     width:335pt;
