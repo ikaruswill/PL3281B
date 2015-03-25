@@ -5,13 +5,11 @@ mod.service('psychService', function() {
 
     this.testConstants = {
         maxIterations: 4, // 4
-        practiceMaxTrials: 1, // 5
-        standardMaxTrials: 1, // 12
-        maxDisplays: 2, // 7
+        practiceMaxTrials: 5, // 5
+        standardMaxTrials: 12, // 12
+        maxDisplays: 7, // 7
         displayDuration: 1000, //1000 (ms)
         betweenDuration: 500, // 500 (ms)
-        breakDuration: 60, // 60 (s)
-
 
         colourValueMap: {
             0: '#ffff00', // Yellow
