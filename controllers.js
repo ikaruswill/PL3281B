@@ -5,9 +5,9 @@ mod.service('psychService', function() {
 
     this.testConstants = {
         maxIterations: 4, // 4
-        practiceMaxTrials: 5, // 5
-        standardMaxTrials: 12, // 12
-        maxDisplays: 7, // 7
+        practiceMaxTrials: 1, // 5
+        standardMaxTrials: 1, // 12
+        maxDisplays: 2, // 7
         displayDuration: 1000, //1000 (ms)
         betweenDuration: 500, // 500 (ms)
         breakDuration: 60, // 60 (s)
@@ -597,40 +597,39 @@ function routeConfig($routeProvider) {
 
 mod.config(routeConfig);
 /*
-mod.controller('keyboardListener', ['$scope', function($scope) {
-    $scope.keyCode = '';
+ mod.controller('keyboardListener', ['$scope', function($scope) {
+ $scope.keyCode = '';
 
-    $scope.keyPress = function(event) {
-        if(event.which === 32) {
-            $scope.keyCode = event.which;
+ $scope.keyPress = function(event) {
+ if(event.which === 32) {
+ $scope.keyCode = event.which;
+ }
+ }
+ }]);
+ */
+mod.controller('sessionInitController', ['psychService', '$location', function(psychService, $location){
+    var vm = this;
+    var sessionParams = psychService.sessionParams;
+    vm.sessionNoInput = '';
+
+    vm.parseSessionNoInput = function() {
+        if(vm.sessionNoInput % 2 === 1) {
+            sessionParams.testType = 'order';
+        } else if(vm.sessionNoInput % 2 === 0){
+            sessionParams.testType = 'colour';
+        }
+        sessionParams.sessionNo = vm.sessionNoInput;
+        $location.path('/ins-common');
+    };
+
+    vm.divergeInsRedirect = function() {
+        if(sessionParams.testType == 'order'){
+            $location.path('/ins-order');
+        }else if(sessionParams.testType == 'colour') {
+            $location.path('/ins-colour');
         }
     }
 }]);
-*/
-mod.controller('sessionInitController', ['psychService', '$location', function(psychService, $location){
-        var vm = this;
-        var sessionParams = psychService.sessionParams;
-        vm.sessionNoInput = '';
-
-        vm.parseSessionNoInput = function() {
-            if(vm.sessionNoInput % 2 === 1) {
-                sessionParams.testType = 'order';
-            } else if(vm.sessionNoInput % 2 === 0){
-                sessionParams.testType = 'colour';
-            }
-            sessionParams.sessionNo = vm.sessionNoInput;
-            $location.path('/ins-common');
-        };
-
-        vm.divergeInsRedirect = function() {
-            if(sessionParams.testType == 'order'){
-                $location.path('/ins-order');
-            }else if(sessionParams.testType == 'colour') {
-                $location.path('/ins-colour');
-            }
-        }
-    }]
-);
 
 mod.controller('prePracticeController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
@@ -676,35 +675,35 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         this.resetTestState();
         console.log('TrialCount @ pauseRedirect: ' + svc.testState.trialCount);
         svc.testState.trialCount++;
-       // if($scope.keyCode == 32) {
-            // End of trial
-            if(svc.testState.trialCount < svc.testState.maxTrials) {
-                $location.path('/pause');
-            }
-            // End of iteration (First run: after practice)
-            else if(svc.testState.trialCount === svc.testState.maxTrials) {
-                svc.testState.iterationCount++;
-                svc.testState.trialCount = 0;
+        // if($scope.keyCode == 32) {
+        // End of trial
+        if(svc.testState.trialCount < svc.testState.maxTrials) {
+            $location.path('/pause');
+        }
+        // End of iteration (First run: after practice)
+        else if(svc.testState.trialCount === svc.testState.maxTrials) {
+            svc.testState.iterationCount++;
+            svc.testState.trialCount = 0;
 
-                // Check if recent iteration is practice
-                if(svc.testState.iterationType === 'practice') {
+            // Check if recent iteration is practice
+            if(svc.testState.iterationType === 'practice') {
 
-                    // Set variables to standard test
-                    svc.testState.maxTrials = svc.testConstants.standardMaxTrials;
-                    svc.testState.iterationType = 'standard';
+                // Set variables to standard test
+                svc.testState.maxTrials = svc.testConstants.standardMaxTrials;
+                svc.testState.iterationType = 'standard';
 
-                    // Redirect to end practice pseudo-break;
-                    $location.path('/endpractice');
+                // Redirect to end practice pseudo-break;
+                $location.path('/endpractice');
+            } else {
+                if(svc.testState.iterationCount < 3) {
+                    // Redirect to rest page
+                    $location.path('/break');
                 } else {
-                    if(svc.testState.iterationCount < 3) {
-                        // Redirect to rest page
-                        $location.path('/break');
-                    } else {
-                        $location.path('/thankyou');
-                    }
+                    $location.path('/thankyou');
                 }
             }
-       // }
+        }
+        // }
     };
 
     var randomColour;
@@ -904,7 +903,7 @@ mod.controller('exportController', ['psychService', function(psychService) {
     var vm = this;
     vm.csvData = [];
     vm.csvHeader = [svc.sessionParams.testType, "Block", "Distractor", "Trial"];
-    vm.filename = "PL3281B Session " + svc.sessionParams.sessionNo;
+    vm.filename = "PL3281B Session " + svc.sessionParams.sessionNo + ".csv";
     vm.fieldSeparator = ",";
     vm.decimalSeparator = ".";
 

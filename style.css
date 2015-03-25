@@ -22,11 +22,11 @@
 .draggableWrapper {
     width:355pt;
     height:230pt;
-    margin:auto;
+    margin: 0 auto;
 }
 .droppableWrapper {
     width:720pt;
-    margin:auto;
+    margin: 0 auto;
 }
 .draggable {
     width: 84pt;
@@ -71,5 +71,11 @@
     margin: 5pt auto;
 }
 .clearButtonWrapper {
+    text-align: center;
     width: 101pt; float: left
+}
+#submitButtonWrapper {
+    text-align: center;
+    float: none;
+    clear: left;
 }
