@@ -15,7 +15,7 @@ mod.service('psychService', function() {
 
         colourValueMap: {
             0: '#ffff00', // Yellow
-            1: '#e46c0a', // Brown
+            1: '#e46c0a', // Orange
             2: '#ff0000', // Red
             3: '#604a7b', // Purple
             4: '#558ed5', // Blue
@@ -25,7 +25,7 @@ mod.service('psychService', function() {
 
         colourMap: {
             0: 'Yellow',
-            1: 'Brown',
+            1: 'Orange',
             2: 'Red',
             3: 'Purple',
             4: 'Blue',
@@ -54,98 +54,18 @@ mod.service('psychService', function() {
     this.practiceData = {
         distractor: 0, // Always quiet audio
         colourShown: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {}
         },
         colourPicked: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {}
         },
         orderShown: {
             0: [],
@@ -173,224 +93,32 @@ mod.service('psychService', function() {
     this.test1Data = {
         distractor: -1,
         colourShown: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            5: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            6: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            7: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            8: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            9: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            10: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            11: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {}
         },
         colourPicked: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            5: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            6: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            7: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            8: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            9: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            10: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            11: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {}
         },
         orderShown: {
             0: [],
@@ -439,224 +167,32 @@ mod.service('psychService', function() {
     this.test2Data = {
         distractor: -1,
         colourShown: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            5: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            6: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            7: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            8: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            9: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            10: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            11: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {}
         },
         colourPicked: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            5: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            6: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            7: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            8: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            9: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            10: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            11: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {}
         },
         orderShown: {
             0: [],
@@ -705,224 +241,32 @@ mod.service('psychService', function() {
     this.test3Data = {
         distractor: -1,
         colourShown: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            5: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            6: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            7: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            8: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            9: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            10: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            11: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {}
         },
         colourPicked: {
-            0: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            1: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            2: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            3: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            4: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            5: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            6: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            7: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            8: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            9: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            10: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            },
-            11: {
-                B: 0,
-                H: 0,
-                J: 0,
-                Q: 0,
-                V: 0,
-                X: 0,
-                Z: 0
-            }
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {}
         },
         orderShown: {
             0: [],
@@ -1369,7 +713,6 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
     vm.score = 0;
     vm.maxScore = svc.testConstants.maxDisplays;
     var storageDest = svc.storeDest[svc.testState.iterationCount + 1];
-    console.log(svc.testState.iterationCount + 1);
 
     var runLogic = function() {
         // Decommission logic timer on unload
@@ -1560,19 +903,21 @@ mod.controller('exportController', ['psychService', function(psychService) {
     var svc = psychService;
     var vm = this;
     vm.csvData = [];
-    var csvHeader = ["Block", "Distractor", "Trial"];
+    var csvHeader = ["Data", "Block", "Distractor", "Trial"];
     vm.filename = "PL3281B result.csv";
     vm.fieldSeparator = ",";
     vm.decimalSeparator = ".";
 
-    var initCsvHeader = function() {
-        for(var l = 0; l < svc.testConstants.maxTrials; l++) {
-            csvHeader.push("letter" + " " +  l);
-        }
-        for(var c = 0; c < svc.testConstants.maxTrials; c++) {
-            csvHeader.push(svc.testConstants.letterMap[c] + " colour");
-        }
-    };
+    console.log("CSVheader init");
+    for(var l = 0; l < svc.testConstants.maxDisplays; l++) {
+        csvHeader.push("letter" + " " +  l);
+        console.log("CSVheader init trials");
+    }
+    for(var c = 0; c < svc.testConstants.maxDisplays; c++) {
+        csvHeader.push(svc.testConstants.letterMap[c] + " colour");
+        console.log("CSVheader init colour");
+    }
+    csvHeader.push("Score");
 
     var pushArray = function (recipient, sender) {
         for (var i = 0; i < sender.length; i++) {
@@ -1580,32 +925,42 @@ mod.controller('exportController', ['psychService', function(psychService) {
         }
     };
 
+    var pushMap = function(recipient, sender) {
+        var keyArray = Object.keys(sender);
+        for (var i = 0; i < keyArray.length; i++) {
+            recipient.push(sender[keyArray[i]]);
+        }
+    };
+
     for (var i = 0; i < svc.testConstants.maxIterations; i++) {
         var storageDest = svc.storeDest[i];
+        console.log("csvData init");
 
-        for (var t = 0; t < svc.testConstants.practiceMaxTrials; t++) {
-            var shown = [];
-            var actual = [];
+        var maxTrials;
+        if(i === 0) {
+            maxTrials = svc.testConstants.practiceMaxTrials;
+        } else {
+            maxTrials = svc.testConstants.standardMaxTrials;
+        }
+
+        for (var t = 0; t < maxTrials; t++) {
+            var shown = ["Shown"];
+            var picked = ["Picked"];
 
             shown.push(i - 1);
             shown.push(storageDest.distractor);
             shown.push(t);
-            pushArray(shown, storageDest.orderShown);
-            pushArray(shown, storageDest.colourShown);
+            pushArray(shown, storageDest.orderShown[t]);
+            pushMap(shown, storageDest.colourShown[t]);
 
-            actual.push(i - 1);
-            actual.push(storageDest.distractor);
-            actual.push(t);
-            pushArray(shown, storageDest.orderPicked);
-            pushArray(shown, storageDest.colourPicked);
+            picked.push(i - 1);
+            picked.push(storageDest.distractor);
+            picked.push(t);
+            pushArray(picked, storageDest.orderPicked[t]);
+            pushMap(picked, storageDest.colourPicked[t]);
 
             vm.csvData.push(shown);
-            vm.csvData.push(actual);
+            vm.csvData.push(picked);
         }
-    }
-
-    vm.getCsvHeader = function() {
-        initCsvHeader();
-        return csvHeader;
     }
 }]);
