@@ -352,7 +352,7 @@ mod.service('psychService', function() {
     };
 });
 
-mod.service('audioService', ['psychService', '$timeout', '$document', '$window', function(psychService, $timeout, $document, $window) {
+mod.service('audioService', ['psychService', '$timeout', '$document', function(psychService, $timeout, $document) {
     var svc = psychService;
     var vm = this;
     vm.audioDuration = 500; // 500 (ms)
@@ -642,7 +642,7 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
     }
 }]);
 
-mod.controller('practiceController', ['psychService', 'audioService', '$location', '$timeout', '$window', '$scope', '$document', function(psychService, audioService, $location, $timeout, $window, $scope, $document) {
+mod.controller('practiceController', ['psychService', 'audioService', '$location', '$timeout','$scope', function(psychService, audioService, $location, $timeout, $scope) {
     var vm = this;
     var svc = psychService;
     var asvc = audioService;
@@ -817,7 +817,7 @@ mod.controller('endPracticeController',['$location', function($location) {
     }
 }]);
 
-mod.controller('breakController', ['psychService', '$location', '$timeout', function(psychService, $location, $timeout) {
+mod.controller('breakController', ['psychService', '$location', function(psychService, $location) {
     var vm = this;
 
     vm.pauseRedirect = function() {
@@ -887,7 +887,7 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
         }
     };
 
-    vm.onDragSuccess1 = function(data,event){
+    vm.onDragSuccess1 = function(data, event){
         var index = vm.dropped.indexOf(data);
         if (index > -1) {
             vm.dropped.splice(index, 1);
