@@ -903,21 +903,21 @@ mod.controller('exportController', ['psychService', function(psychService) {
     var svc = psychService;
     var vm = this;
     vm.csvData = [];
-    var csvHeader = ["Data", "Block", "Distractor", "Trial"];
+    vm.csvHeader = [svc.sessionParams.testType, "Block", "Distractor", "Trial"];
     vm.filename = "PL3281B result.csv";
     vm.fieldSeparator = ",";
     vm.decimalSeparator = ".";
 
     console.log("CSVheader init");
     for(var l = 0; l < svc.testConstants.maxDisplays; l++) {
-        csvHeader.push("letter" + " " +  l);
+        vm.csvHeader.push("letter" + " " +  l);
         console.log("CSVheader init trials");
     }
     for(var c = 0; c < svc.testConstants.maxDisplays; c++) {
-        csvHeader.push(svc.testConstants.letterMap[c] + " colour");
+        vm.csvHeader.push(svc.testConstants.letterMap[c] + " colour");
         console.log("CSVheader init colour");
     }
-    csvHeader.push("Score");
+    vm.csvHeader.push("Score");
 
     var pushArray = function (recipient, sender) {
         for (var i = 0; i < sender.length; i++) {
@@ -952,12 +952,14 @@ mod.controller('exportController', ['psychService', function(psychService) {
             shown.push(t);
             pushArray(shown, storageDest.orderShown[t]);
             pushMap(shown, storageDest.colourShown[t]);
+            shown.push("-");
 
             picked.push(i - 1);
             picked.push(storageDest.distractor);
             picked.push(t);
             pushArray(picked, storageDest.orderPicked[t]);
             pushMap(picked, storageDest.colourPicked[t]);
+            picked.push(storageDest.score[t]);
 
             vm.csvData.push(shown);
             vm.csvData.push(picked);
