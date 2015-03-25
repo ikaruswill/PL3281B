@@ -12,34 +12,18 @@ mod.service('psychService', function() {
         betweenDuration: 500, // 500 (ms)
 
         colourValueMap: {
-            0: '#ffff00', // Yellow
-            1: '#e46c0a', // Orange
-            2: '#ff0000', // Red
-            3: '#604a7b', // Purple
-            4: '#558ed5', // Blue
-            5: '#00b050', // Green
-            6: '#bfbfbf' // Grey
+            'Yellow': '#ffff00', // Yellow
+            'Orange': '#e46c0a', // Orange
+            'Red'   : '#ff0000', // Red
+            'Purple': '#604a7b', // Purple
+            'Blue'  : '#558ed5', // Blue
+            'Green' : '#00b050', // Green
+            'Grey'  : '#bfbfbf' // Grey
         },
 
-        colourMap: {
-            0: 'Yellow',
-            1: 'Orange',
-            2: 'Red',
-            3: 'Purple',
-            4: 'Blue',
-            5: 'Green',
-            6: 'Grey'
-        },
+        colourArray: ['Yellow', 'Orange', 'Red', 'Purple', 'Blue', 'Green', 'Grey'],
 
-        letterMap: {
-            0: 'B',
-            1: 'H',
-            2: 'J',
-            3: 'Q',
-            4: 'V',
-            5: 'X',
-            6: 'Z'
-        }
+        letterArray: ['B', 'H', 'J', 'Q', 'V', 'X', 'Z']
     };
 
     // User data begins here
@@ -350,8 +334,34 @@ mod.service('psychService', function() {
     };
 });
 
-mod.service('audioService', ['psychService', '$timeout', '$document', function(psychService, $timeout, $document) {
+mod.service('utilityService', [function() {
+    this.shuffleArray = function(array) {
+        var m = array.length, t, i;
+        while(m) {
+            i = Math.floor(Math.random() * m--);
+        }
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+    };
+
+    this.pushArray = function (recipient, sender) {
+        for (var i = 0; i < sender.length; i++) {
+            recipient.push(sender[i]);
+        }
+    };
+
+    this.pushMap = function(recipient, sender) {
+        var keyArray = Object.keys(sender);
+        for (var i = 0; i < keyArray.length; i++) {
+            recipient.push(sender[keyArray[i]]);
+        }
+    };
+}]);
+
+mod.service('audioService', ['psychService', 'utilityService', '$timeout', '$document', function(psychService, utilityService, $timeout, $document) {
     var svc = psychService;
+    var util = utilityService;
     var vm = this;
     vm.audioDuration = 500; // 500 (ms)
     vm.audioFileCount = 4;
@@ -382,21 +392,10 @@ mod.service('audioService', ['psychService', '$timeout', '$document', function(p
     };
 
     var initAudioSequence = function() {
-        var audioTypeUsed = {
-            0: false, // No sound (Quiet sound)
-            1: false, // 1 sound (Homo sound)
-            2: false // 2 sounds (Hetero sound)
-        };
+        var audioTypeUsed = [0, 1, 2];
 
-        for (var i = 0; i < vm.audioTypeCount; i++) {
-            var randomNumber;
-            do {
-                randomNumber = Math.floor(Math.random() * vm.audioTypeCount);
-            } while (audioTypeUsed[randomNumber]);
-            audioTypeUsed[randomNumber] = true;
-            audioTypeSequence.push(randomNumber);
-            console.log("audioTypeSequence: pushed " + randomNumber);
-        }
+        util.shuffleArray(audioTypeUsed);
+        util.pushArray(audioTypeSequence, audioTypeUsed);
 
         for(var j = 0; j < audioTypeSequence.length; j++) {
             svc.storeDest[j].distractor = audioTypeSequence[j];
@@ -639,10 +638,11 @@ mod.controller('prePracticeController', ['psychService', '$location', function(p
     }
 }]);
 
-mod.controller('practiceController', ['psychService', 'audioService', '$location', '$timeout','$scope', function(psychService, audioService, $location, $timeout, $scope) {
+mod.controller('practiceController', ['psychService', 'audioService', 'utilityService', '$location', '$timeout','$scope', function(psychService, audioService, utilityService, $location, $timeout, $scope) {
     var vm = this;
     var svc = psychService;
     var asvc = audioService;
+    var util = utilityService;
 
     // Redirects
     var testRedirect = function() {
@@ -721,7 +721,19 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
         if(svc.testState.displayCount === -1) {
             vm.currentLetter = '!';
             svc.testState.displayCount++;
-            storageDest = svc.storeDest[svc.testState.iterationCount + 1];
+
+            // Shuffle letter order
+            storageDest.orderShown[svc.testState.trialCount] = svc.testConstants.letterArray.slice(0);
+            util.shuffleArray(storageDest.orderShown[svc.testState.trialCount]);
+
+            // Shuffle colour association
+            var colourSequence = svc.testConstants.colourArray.slice(0);
+            util.shuffleArray(colourSequence);
+
+            for(var j = 0; j < svc.maxDisplays; j++) {
+                storageDest.colourShown[svc.testState.trialCount][storageDest.orderShown[j]] = colourSequence[j];
+            }
+
             timer = $timeout(testRedirect, 1000);
         }
 
@@ -731,23 +743,12 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
             asvc.playAudio();
 
             if(!svc.testState.tested) {
-                // Generate random numbers for colour and letter
-                // While number has occurred in testState keep generating
-                do {
-                    randomLetter = Math.floor(Math.random() * svc.testConstants.maxDisplays);
-                } while(svc.testState.letterPool[randomLetter]);
-                do {
-                    randomColour = Math.floor(Math.random() * svc.testConstants.maxDisplays);
-                } while(svc.testState.colourPool[randomColour]);
-
                 // Update view
-                vm.currentLetter = svc.testConstants.letterMap[randomLetter];
-                vm.currentColourValue = svc.testConstants.colourValueMap[randomColour];
-                vm.currentColour = svc.testConstants.colourMap[randomColour];
+                vm.currentLetter = storageDest.orderShown[svc.testState.trialCount][svc.testState.displayCount];
+                vm.currentColour = storageDest.colourShown[svc.testState.trialCount][svc.testState.displayCount];
+                vm.currentColourValue = svc.testConstants.colourValueMap[vm.currentColour];
 
                 // Update test answers
-                storageDest.orderShown[svc.testState.trialCount].push(vm.currentLetter);
-                storageDest.colourShown[svc.testState.trialCount][vm.currentLetter] = vm.currentColour;
                 console.log('Letter shown stored: ' + storageDest.orderShown[svc.testState.trialCount][svc.testState.displayCount]);
                 console.log('Colour Shown stored: ' + storageDest.colourShown[svc.testState.trialCount][vm.currentLetter]);
 
@@ -790,7 +791,7 @@ mod.controller('practiceController', ['psychService', 'audioService', '$location
                         vm.score++;
                     }
                 } else if(svc.sessionParams.testType === 'colour') {
-                    var currentLetter = svc.testConstants.letterMap[i];
+                    var currentLetter = storageDest.orderPicked[svc.testState.trialCount][i];
                     console.log('colourPicked: ' + storageDest.colourPicked[svc.testState.trialCount][currentLetter]);
                     console.log('colourShown: ' + storageDest.colourShown[svc.testState.trialCount][currentLetter]);
 
@@ -837,7 +838,7 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
     // Initialize draggable, droppable, dropped and button objects
     for(var i = 0; i < svc.testConstants.maxDisplays; i++) {
         var letterObj = {
-            letter: svc.testConstants.letterMap[i],
+            letter: svc.testConstants.letterArray[i],
             value: i // Letter map index
         };
         vm.draggable.push(letterObj);
@@ -896,8 +897,9 @@ mod.controller('scoresheetController', ['psychService', '$location', function(ps
     }
 }]);
 
-mod.controller('exportController', ['psychService', function(psychService) {
+mod.controller('exportController', ['psychService', 'utilityService', function(psychService, utilityService) {
     var svc = psychService;
+    var util = utilityService;
     var vm = this;
     vm.csvData = [];
     vm.csvHeader = [svc.sessionParams.testType, "Block", "Distractor", "Trial"];
@@ -915,19 +917,6 @@ mod.controller('exportController', ['psychService', function(psychService) {
         console.log("CSVheader init colour");
     }
     vm.csvHeader.push("Score");
-
-    var pushArray = function (recipient, sender) {
-        for (var i = 0; i < sender.length; i++) {
-            recipient.push(sender[i]);
-        }
-    };
-
-    var pushMap = function(recipient, sender) {
-        var keyArray = Object.keys(sender);
-        for (var i = 0; i < keyArray.length; i++) {
-            recipient.push(sender[keyArray[i]]);
-        }
-    };
 
     for (var i = 0; i < svc.testConstants.maxIterations; i++) {
         var storageDest = svc.storeDest[i];
@@ -947,15 +936,15 @@ mod.controller('exportController', ['psychService', function(psychService) {
             shown.push(i - 1);
             shown.push(storageDest.distractor);
             shown.push(t);
-            pushArray(shown, storageDest.orderShown[t]);
-            pushMap(shown, storageDest.colourShown[t]);
+            util.pushArray(shown, storageDest.orderShown[t]);
+            util.pushMap(shown, storageDest.colourShown[t]);
             shown.push("-");
 
             picked.push(i - 1);
             picked.push(storageDest.distractor);
             picked.push(t);
-            pushArray(picked, storageDest.orderPicked[t]);
-            pushMap(picked, storageDest.colourPicked[t]);
+            util.pushArray(picked, storageDest.orderPicked[t]);
+            util.pushMap(picked, storageDest.colourPicked[t]);
             picked.push(storageDest.score[t]);
 
             vm.csvData.push(shown);
