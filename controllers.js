@@ -305,24 +305,14 @@ mod.service('psychService', function() {
 
         tested: false,
 
-        colourPool: {
-            0: false,
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false
-        },
-
-        letterPool: {
-            0: false,
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false
+        letterColourIndex: {
+            'B': -1,
+            'H': -1,
+            'J': -1,
+            'Q': -1,
+            'V': -1,
+            'X': -1,
+            'Z': -1
         }
     };
 
@@ -384,12 +374,12 @@ mod.service('audioService', ['psychService', 'utilityService', '$timeout', '$doc
     var homoTimer;
     var heteroTimer;
 
-    var audioPathMap = {
-        0: 'audio/G.wav',
-        1: 'audio/L.wav',
-        2: 'audio/M.wav',
-        3: 'audio/R.wav'
-    };
+    var audioPaths = [
+        'audio/G.wav',
+        'audio/L.wav',
+        'audio/M.wav',
+        'audio/R.wav'
+    ];
 
     var initAudioSequence = function() {
         var audioTypeUsed = [0, 1, 2];
@@ -432,7 +422,7 @@ mod.service('audioService', ['psychService', 'utilityService', '$timeout', '$doc
     };
 
     var playHomo = function() {
-        audioElement.src = audioPathMap[currentHomoFile];
+        audioElement.src = audioPaths[currentHomoFile];
         audioElement.play();
         homoTimer = $timeout(playHomo, vm.audioDuration);
         homoPlaying = true;
@@ -453,41 +443,24 @@ mod.service('audioService', ['psychService', 'utilityService', '$timeout', '$doc
         var setCount = audioCount / vm.audioFileCount;
 
         var lastAudio = -1;
-        var randomNumberHetero;
-
-        var numberUsed = {
-            0: false,
-            1: false,
-            2: false,
-            3: false
-        };
+        var heteroSet = audioPaths.slice(0);
 
         // For each set
-        for(var i = 0; i < setCount; i++) {
-            // For each audio file
-            for(var j = 0; j < vm.audioFileCount; j++) {
-                // Choose and remember random audio file
-                do{
-                    randomNumberHetero = Math.floor(Math.random() * vm.audioFileCount);
-                }while(numberUsed[randomNumberHetero] || (randomNumberHetero === lastAudio));
-                numberUsed[randomNumberHetero] = true;
-                console.log("H init iteration: " + i + " Audio: " + randomNumberHetero);
-                // Remember last random audio file
-                lastAudio = randomNumberHetero;
+        for (var i = 0; i < setCount; i++) {
+            // Choose and remember random set
+            do {
+                util.shuffleArray(heteroSet);
+            } while (heteroSet[heteroSet.length - 1] === lastAudio);
+            // Remember last random audio file
+            lastAudio = heteroSet[heteroSet.length - 1];
 
-                // Add to play sequence
-                heteroAudioSequence.push(randomNumberHetero);
-            }
-
-            // Refresh numberUsed
-            for(var k = 0; k < 4; k++) {
-                numberUsed[k] = false;
-            }
+            // Add to play sequence
+            util.pushArray(heteroAudioSequence, heteroSet);
         }
     };
 
     var playHetero = function() {
-        audioElement.src = audioPathMap[heteroAudioSequence[currentHeteroSequenceIndex]];
+        audioElement.src = heteroAudioSequence[currentHeteroSequenceIndex];
         currentHeteroSequenceIndex++;
         audioElement.play();
         heteroTimer = $timeout(playHetero, vm.audioDuration);
@@ -704,8 +677,6 @@ mod.controller('practiceController', ['psychService', 'audioService', 'utilitySe
         // }
     };
 
-    var randomColour;
-    var randomLetter;
     var timer;
     vm.score = 0;
     vm.maxScore = svc.testConstants.maxDisplays;
@@ -727,12 +698,8 @@ mod.controller('practiceController', ['psychService', 'audioService', 'utilitySe
             util.shuffleArray(storageDest.orderShown[svc.testState.trialCount]);
 
             // Shuffle colour association
-            var colourSequence = svc.testConstants.colourArray.slice(0);
-            util.shuffleArray(colourSequence);
-
-            for(var j = 0; j < svc.maxDisplays; j++) {
-                storageDest.colourShown[svc.testState.trialCount][storageDest.orderShown[j]] = colourSequence[j];
-            }
+            storageDest.colourShown[svc.testState.trialCount] = svc.testConstants.colourArray.slice(0);
+            util.shuffleArray(storageDest.colourShown[svc.testState.trialCount]);
 
             timer = $timeout(testRedirect, 1000);
         }
@@ -750,11 +717,7 @@ mod.controller('practiceController', ['psychService', 'audioService', 'utilitySe
 
                 // Update test answers
                 console.log('Letter shown stored: ' + storageDest.orderShown[svc.testState.trialCount][svc.testState.displayCount]);
-                console.log('Colour Shown stored: ' + storageDest.colourShown[svc.testState.trialCount][vm.currentLetter]);
-
-                // Update available sets
-                svc.testState.colourPool[randomColour] = true;
-                svc.testState.letterPool[randomLetter] = true;
+                console.log('Colour Shown stored: ' + storageDest.colourShown[svc.testState.trialCount][svc.testState.displayCount]);
 
                 // Set variables for next view
                 svc.testState.tested = true;
